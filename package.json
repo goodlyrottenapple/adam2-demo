@@ -1,0 +1,73 @@
+{
+  "name": "adam2-demo",
+  "version": "1.0.0",
+  "description": "Get your ADG3 on with this sample project using Atlaskit React components",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "buildCV": "node ./build-non-split.js",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "surge": "bash surge_login.sh && surge --project ./build/ --domain atlaskit-starter.surge.sh",
+    "api": "rm -rf gen/api && openapi-generator generate -i http://web:8000/openapi.json --generator-name javascript -o gen/api && cd gen/api && yarn && yarn build"
+  },
+  "keywords": [],
+  "author": "Sam Balco",
+  "license": "MIT",
+  "dependencies": {
+    "@atlaskit/avatar": "^17.1.8",
+    "@atlaskit/banner": "^10.1.7",
+    "@atlaskit/button": "^13.3.8",
+    "@atlaskit/code": "^11.1.3",
+    "@atlaskit/css-reset": "^5.0.10",
+    "@atlaskit/datetime-picker": "^9.2.8",
+    "@atlaskit/dropdown-menu": "^9.0.1",
+    "@atlaskit/flag": "^12.3.9",
+    "@atlaskit/form": "^7.1.3",
+    "@atlaskit/icon": "^20.0.2",
+    "@atlaskit/inline-edit": "^10.0.29",
+    "@atlaskit/modal-dialog": "^10.5.3",
+    "@atlaskit/navigation": "^36.0.2",
+    "@atlaskit/page": "^11.0.12",
+    "@atlaskit/select": "^11.0.7",
+    "@atlaskit/textfield": "^3.1.7",
+    "@atlaskit/theme": "^9.5.1",
+    "@atlaskit/toggle": "^8.1.6",
+    "@atlaskit/tree": "^7.1.2",
+    "antd": "^4.0.3",
+    "prop-types": "^15.6.0",
+    "react": "^16.8.2",
+    "react-bootstrap-table-next": "^4.0.0",
+    "react-bootstrap-table2-editor": "^1.4.0",
+    "react-collapsible": "^2.7.0",
+    "react-dom": "^16.8.4",
+    "react-grid-layout": "^0.18.3",
+    "react-resize-detector": "^4.2.3",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
+    "react-transition-group": "^4.3.0",
+    "react-virtualized": "^9.21.2",
+    "styled-components": "^5.0.1"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^1.0.12-4.3.0",
+    "react-scripts": "^3.4.0",
+    "rewire": "^5.0.0",
+    "surge": "^0.21.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "main": "index.js",
+  "repository": "https://github.com/goodlyrottenapple/adam2-demo.git",
+  "private": false
+}

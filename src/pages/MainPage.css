@@ -1,0 +1,67 @@
+.editable-cell {
+  position: relative;
+}
+
+.editable-cell-value-wrap {
+  padding: 5px 12px;
+  cursor: pointer;
+  min-height: 20px;
+}
+
+.editable-row:hover .editable-cell-value-wrap {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  padding: 4px 11px;
+}
+
+[data-theme='dark'] .editable-row:hover .editable-cell-value-wrap {
+  border: 1px solid #434343;
+}
+
+.settingsTable tr:hover {
+  background-color: #f8f9fa;
+}
+
+.settingsTable input {
+	height: 20px;
+	width: 100%
+}
+
+.ant-table thead > tr > th, .ant-table tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
+    position: relative;
+    padding: 16px 16px;
+    overflow-wrap: break-word;
+}
+
+.ant-table-column-sorter-up + .ant-table-column-sorter-down {
+    margin-top: -0.3em;
+}
+
+.ant-table-column-sorter-up, .ant-table-column-sorter-down {
+    display: inline-block;
+    font-size: 11px;
+}
+
+.ant-table-column-sorter {
+    margin-top: 0.15em;
+    margin-bottom: -0.15em;
+    margin-left: 8px;
+    color: #bfbfbf;
+}
+
+.ant-table-column-sorter-inner {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.ant-table-column-sorter-up.active, .ant-table-column-sorter-down.active {
+    color: #1890ff;
+}
