@@ -30,7 +30,7 @@ const mergeObjs = (a,b) => {
   if(a === undefined) return b;
   if(b === undefined) return a;
   switch(typeof a){
-    case "object": 
+    case "object":
       if(Array.isArray(a)){
         if(Array.isArray(b)) return [...a, ...b]
         else return [...a, b]
@@ -61,8 +61,8 @@ const collectChildren = (tree, children, isRoot = false) => {
 }
 
 const builders = Object.keys(typeMap).filter(e => 'type' in typeMap[e]).map(e => {return {
-  value:e, 
-  label: typeMap[e].label, 
+  value:e,
+  label: typeMap[e].label,
   canHaveChildren:typeMap[e].canHaveChildren,
   childrenType:typeMap[e].childrenType,
   rootNesting:typeMap[e].rootNesting,
@@ -136,7 +136,7 @@ export default class MainPage extends Component<Props, State> {
     return (data) => {
       var newTree = {...this.state.tree}
       newTree.items[id].data = data
-      
+
       this.setState({
         tree: newTree,
       });
@@ -157,10 +157,10 @@ export default class MainPage extends Component<Props, State> {
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
-        
+
       >
         <div style={{
-          backgroundColor:'white', 
+          backgroundColor:'white',
           borderColor: 'rgb(222, 235, 255)',
           borderRadius: '3px',
           borderWidth: '2px',
@@ -183,7 +183,7 @@ export default class MainPage extends Component<Props, State> {
     );
   };
 
-  
+
   createTreeItem = (id: string, ty: string, canHaveChildren, childrenType, rootNesting) => {
     return {
       id: id,
@@ -204,9 +204,9 @@ export default class MainPage extends Component<Props, State> {
     newItems[`${id}`] = this.createTreeItem(id, ty, canHaveChildren, childrenType, rootNesting);
     newItems['root'].children.push(`${id}`);
     return {
-      rootId:tree.rootId, 
+      rootId:tree.rootId,
       items: newItems
-    } 
+    }
   }
 
   deleteItem = (tree: TreeData, id: string) => {
@@ -220,9 +220,9 @@ export default class MainPage extends Component<Props, State> {
     }
 
     return {
-      rootId:tree.rootId, 
+      rootId:tree.rootId,
       items: newItems
-    } 
+    }
   }
 
 
@@ -237,7 +237,7 @@ export default class MainPage extends Component<Props, State> {
     });
   }
 
-  
+
 
 
   onDragEnd = (
@@ -253,7 +253,7 @@ export default class MainPage extends Component<Props, State> {
     console.log(tree.items[tree.items[source.parentId].children[source.index]].type);
 
     if(!tree.items[destination.parentId].canHaveChildren
-       || 
+       ||
       (tree.items[destination.parentId].childrenType && !tree.items[destination.parentId].childrenType.includes(tree.items[tree.items[source.parentId].children[source.index]].type))
     ){
       return;
@@ -312,30 +312,37 @@ export default class MainPage extends Component<Props, State> {
     return (
       <ContentWrapper>
         <PageTitle>ADA-M 2.0 demo</PageTitle>
-        <Tree
-          tree={tree}
-          renderItem={this.renderItem}
-          onDragEnd={this.onDragEnd}
-          offsetPerLevel={PADDING_PER_LEVEL}
-          isDragEnabled
-          isNestingEnabled
-        />
-        <div style={{marginTop:'100px'}}>
-          {/* <h4 style={{paddingBottom:'10px'}}>Add a property:</h4> */}
-          <Select
-            options={builders}
-            onChange={this.handleChange}
-            placeholder="Select a property to add" />
-        </div>
-        <div style={{marginTop:'20px'}}>
-        {/* <Button appearance="primary" onClick={this.saveTree}>Save settings</Button> */}
-        </div>
-        <h4 style={{paddingTop:'30px', paddingBottom:'10px'}}>ADA-M:</h4>
-        <AkCodeBlock 
-          language="json" 
-          text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)} 
-          showLineNumbers={false}/>
-      </ContentWrapper> 
+        <Grid>
+          <GridColumn medium={4}>
+          <h4 style={{marginTop:'23px', paddingBottom:'10px'}}>Profile Options:</h4>
+          <div style={{marginTop:'0px'}}>
+            {/* <h4 style={{paddingBottom:'10px'}}>Add a property:</h4> */}
+            <Select
+              options={builders}
+              onChange={this.handleChange}
+              placeholder="Select a property to add" />
+          </div>
+          </GridColumn>
+          <GridColumn medium={8}>
+            <Tree
+              tree={tree}
+              renderItem={this.renderItem}
+              onDragEnd={this.onDragEnd}
+              offsetPerLevel={PADDING_PER_LEVEL}
+              isDragEnabled
+              isNestingEnabled
+            />
+            <div style={{marginTop:'0px'}}>
+            {/* <Button appearance="primary" onClick={this.saveTree}>Save settings</Button> */}
+            </div>
+            <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>ADA-M:</h4>
+            <AkCodeBlock
+              language="json"
+              text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
+              showLineNumbers={false}/>
+          </GridColumn>
+        </Grid>
+      </ContentWrapper>
     );
   }
 }
