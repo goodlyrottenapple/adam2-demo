@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ContentWrapper from '../components/ContentWrapper';
 import PageTitle from '../components/PageTitle';
+import Textfield from '@atlaskit/textfield';
 
 import styled from 'styled-components';
 import Tree, {
@@ -72,6 +73,9 @@ export default class MainPage extends Component<Props, State> {
 
   state = {
     counter:0,
+    ontologies:[],
+    ontoURL: null,
+    activeOntology:null,
     tree: {
       rootId: 'root',
       items: {
@@ -295,10 +299,31 @@ export default class MainPage extends Component<Props, State> {
         // instead of a catch() block so that we don't swallow
         // exceptions from actual bugs in components.
         (error) => {
-          console.log(error)
+          console.log(error);
         })
   }
 
+  addOntology = () => {
+
+    this.state.ontologies.push(this.state.ontoURL)
+
+    fetch(this.state.ontoURL, {
+      method:'GET',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(
+      (result) => {
+        console.log(result);
+      },
+      (error) => {
+        console.log(error);
+      })
+  }
 
 
 
@@ -313,16 +338,34 @@ export default class MainPage extends Component<Props, State> {
       <ContentWrapper>
         <PageTitle>ADA-M 2.0 demo</PageTitle>
         <Grid>
+
           <GridColumn medium={4}>
-          <h4 style={{marginTop:'23px', paddingBottom:'10px'}}>Profile Options:</h4>
-          <div style={{marginTop:'0px'}}>
-            {/* <h4 style={{paddingBottom:'10px'}}>Add a property:</h4> */}
-            <Select
-              options={builders}
-              onChange={this.handleChange}
-              placeholder="Select a property to add" />
-          </div>
+            <h4 style={{marginTop:'23px', paddingBottom:'10px'}}>Profile Options:</h4>
+            <div style={{marginTop:'0px'}}>
+              {/* <h4 style={{paddingBottom:'10px'}}>Add a property:</h4> */}
+              <Select
+                options={builders}
+                onChange={this.handleChange}
+                placeholder="Select a property to add" />
+            </div>
+
+            <h4 style={{marginTop:'23px', paddingBottom:'10px'}}>Ontology Sources:</h4>
+            <div style={{marginTop:'0px'}}>
+              <Textfield
+                name="ontoURL"
+                value={this.state.ontoURL}
+              />
+              <Button appearance="primary" onClick={this.addOntology}>Add Ontology</Button>
+            </div>
+            <div style={{marginTop:'0px'}}>
+              {/* <h4 style={{paddingBottom:'10px'}}>Add a property:</h4> */}
+              <Select
+                options={this.ontologies}
+                onChange={this.handleChange}
+                placeholder="Select active ontology" />
+            </div>
           </GridColumn>
+
           <GridColumn medium={8}>
             <Tree
               tree={tree}
@@ -341,6 +384,7 @@ export default class MainPage extends Component<Props, State> {
               text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
               showLineNumbers={false}/>
           </GridColumn>
+
         </Grid>
       </ContentWrapper>
     );
