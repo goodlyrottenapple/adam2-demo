@@ -41,9 +41,9 @@ export default class Term extends React.Component {
 		return (
 		  <div>
 	      <Grid >
-
+				<h4 style={{marginTop: '0.5em', marginLeft: '0.5em'}}>Term</h4>
 			  	<GridColumn medium={12}>
-			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data use class:</h5>
+			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data Use Class:</h5>
 				  	<Select
 		            className="single-select"
 		          	classNamePrefix="react-select"
@@ -61,7 +61,7 @@ export default class Term extends React.Component {
 			  	</GridColumn>
 
 	        <GridColumn medium={5}>
-			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction rule:</h5>
+			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction Rule:</h5>
 	          <Select
 	            className="single-select"
 	          	classNamePrefix="react-select"
@@ -79,7 +79,7 @@ export default class Term extends React.Component {
 			    </GridColumn>
 
 	        <GridColumn medium={5}>
-			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction object:</h5>
+			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction Object:</h5>
 	          <Select
 	            className="single-select"
 	          	classNamePrefix="react-select"
@@ -97,7 +97,7 @@ export default class Term extends React.Component {
 			    </GridColumn>
 
 			  	<GridColumn medium={4}>
-						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Constraints details:</h5>
+						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Constraints Details:</h5>
 						<Textfield
 							name="resourceName"
 							defaultValue={this.state.data.restriction_class.constraints_details}
@@ -106,7 +106,7 @@ export default class Term extends React.Component {
 			  	</GridColumn>
 
 	      </Grid>
-				
+
 			</div>
 		);
 	}
