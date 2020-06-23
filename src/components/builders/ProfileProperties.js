@@ -11,7 +11,6 @@ export default class PRofileProperties extends React.Component {
 		data: this.props.data ? this.props.data : {
 			profileName:'',
 			profileVersion:'',
-			resourceDescription:'',
 			profileCreateDate:'',
 		},
 	}
@@ -23,12 +22,7 @@ export default class PRofileProperties extends React.Component {
 
 	handleChange = prop_name => e =>  {
 		const newData = {...this.state.data};
-
-		// Add new References
-		// newData.profileReferences[0][prop_name] = e.target.value;
-		// Add new update dates
-		// newData.profileUpdateDates[0][prop_name] = e.target.value;
-
+		newData[prop_name] = e.target.value;
 		this.setState({data: newData});
 		this.props.setData(newData);
 	}

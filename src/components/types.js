@@ -17,7 +17,7 @@ export const typeMap = {
     },
     'ProfileReferences': {
       type: ProfileReferences,
-      label: 'Profile References',
+      label: 'Profile References (+)',
       canHaveChildren: false
     },
     'ResourceProperties': {
@@ -27,17 +27,17 @@ export const typeMap = {
 		},
     'ResourceReferences': {
       type: ResourceReferences,
-      label: 'Resource References',
+      label: 'Resource References (+)',
       canHaveChildren: false
     },
     'ResourceContact': {
     	type: ResourceContacts,
-			label: 'Resource Contacts',
+			label: 'Resource Contacts (+)',
 			canHaveChildren: false
     },
     'ResourceOrganisations': {
     	type: ResourceOrganisations,
-			label: 'Resource Organisations',
+			label: 'Resource Organisations (+)',
 			canHaveChildren: false
     },
     'SharingMode': {
@@ -52,7 +52,7 @@ export const typeMap = {
 		},
 		'Term': {
     	type: Term,
-			label: 'Term',
+			label: 'Term (+)',
 			canHaveChildren: true,
 			childrenType: ['Term'],
 			rootNesting: (e) => ({terms:[e]})
