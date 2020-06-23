@@ -1,27 +1,56 @@
 
 import SharingMode from './builders/SharingMode';
+import PermissionMode from './builders/PermissionMode';
+import ProfileProperties from './builders/ProfileProperties';
+import ProfileReferences from './builders/ProfileReferences';
 import ResourceProperties from './builders/ResourceProperties';
-import Contact from './builders/Contact';
+import ResourceReferences from './builders/ResourceReferences';
+import ResourceContacts from './builders/ResourceContacts';
+import ResourceOrganisations from './builders/ResourceOrganisations';
 import Term from './builders/Term';
 
-
 export const typeMap = {
-    'ResourceProperties': { 
+    'ProfileProperties': {
+      type: ProfileProperties,
+      label: 'Profile Basics',
+      canHaveChildren: false
+    },
+    'ProfileReferences': {
+      type: ProfileReferences,
+      label: 'Profile References',
+      canHaveChildren: false
+    },
+    'ResourceProperties': {
     	type: ResourceProperties,
-			label: 'Resource properties',
+			label: 'Resource Properties',
 			canHaveChildren: false
 		},
-    'Contact': { 
-    	type: Contact,
-			label: 'Contact',
+    'ResourceReferences': {
+      type: ResourceReferences,
+      label: 'Resource References',
+      canHaveChildren: false
+    },
+    'ResourceContact': {
+    	type: ResourceContacts,
+			label: 'Resource Contacts',
 			canHaveChildren: false
     },
-    'SharingMode': { 
+    'ResourceOrganisations': {
+    	type: ResourceOrganisations,
+			label: 'Resource Organisations',
+			canHaveChildren: false
+    },
+    'SharingMode': {
     	type: SharingMode,
-			label: 'Sharing mode',
+			label: 'Sharing Mode',
 			canHaveChildren: false
 		},
-		'Term': { 
+    'PermissionMode': {
+    	type: PermissionMode,
+			label: 'Permission Mode',
+			canHaveChildren: false
+		},
+		'Term': {
     	type: Term,
 			label: 'Term',
 			canHaveChildren: true,
