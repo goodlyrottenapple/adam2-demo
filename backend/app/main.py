@@ -1,11 +1,7 @@
+import rdflib, json, hashlib
 from fastapi import Depends, FastAPI
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
-import rdflib, json, hashlib
-# from rdflib.serializer import Serializer
 from rdflib.namespace import RDFS
 from os import path
 
@@ -72,19 +68,14 @@ async def getOntology(payload:Query):
     g = rdflib.Graph()
     g.load(payload.url)
 
-
-
     subcls = {}
     notTopLevel = set()
 
     subcls_inv = {}
    
     for s, _, o in g.triples((None, RDFS.subClassOf, None)):
-      # print("{} --> {}".format(s, o))
-
       s_str = str(s)
       o_str = str(o)
-      # print(g.preferredLabel(s))
 
       if o_str in subcls: 
         subcls[o_str]['children'] = subcls[o_str]['children'] + [s_str]
@@ -112,8 +103,6 @@ async def getOntology(payload:Query):
       if o_str not in subcls_inv:
         subcls_inv[o_str] = set()
 
-    # subcls_inv_tr_closure = subcls_inv
-    # print(subcls)
 
     allTopLevelWithLabels = [x for (k,v) in subcls.items() for x in firstChildrenWithLabel(subcls, k) if k not in notTopLevel]
     allTopLevelWithLabelsFiltered = []
@@ -121,9 +110,8 @@ async def getOntology(payload:Query):
       notSubClassOfAny = True
       for y in allTopLevelWithLabels:
         if subClassOfTrans(subcls_inv, x, y): notSubClassOfAny = False
-      if (notSubClassOfAny): allTopLevelWithLabelsFiltered.append(x)
+      if notSubClassOfAny: allTopLevelWithLabelsFiltered.append(x)
     # print([subcls[x]['label'] for x in allTopLevelWithLabelsFiltered])
-    # print([recAddChildren(subcls, set(), k, v) for (k,v) in subcls.items() if k not in notTopLevel and v['label']])
     res = [recAddChildren(subcls, set(), k, subcls[k]) for k in allTopLevelWithLabelsFiltered]
 
     with open(h_url, 'w') as outfile:
