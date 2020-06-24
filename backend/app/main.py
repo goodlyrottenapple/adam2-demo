@@ -60,7 +60,7 @@ def subClassOfTrans(g, a, b):
 
 
 @app.post("/getOntology")
-async def read_users_me(payload:Query):
+async def getOntology(payload:Query):
   m = hashlib.md5()
   m.update(payload.url.encode('utf-8'))
   h_url = "cache/" + str(m.hexdigest())+".json"
