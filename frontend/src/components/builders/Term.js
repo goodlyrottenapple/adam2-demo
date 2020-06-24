@@ -3,6 +3,9 @@ import Select from '@atlaskit/select';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
 
+import DropdownTreeSelect from 'react-dropdown-tree-select'
+import 'react-dropdown-tree-select/dist/styles.css'
+
 const restriction_ruleEnum = ["UNKNOWN", "NO_CONSTRAINTS", "CONSTRAINTS", "FORBIDDEN"]
 
 export default class Term extends React.Component {
@@ -44,7 +47,7 @@ export default class Term extends React.Component {
 				<h4 style={{marginTop: '0.5em', marginLeft: '0.5em'}}>Term</h4>
 			  	<GridColumn medium={12}>
 			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data Use Class:</h5>
-				  	<Select
+				  	{/* <Select
 		            className="single-select"
 		          	classNamePrefix="react-select"
 		          	menuPortalTarget={document.body}
@@ -57,7 +60,14 @@ export default class Term extends React.Component {
 		            options={["dummy1", "dummy2"].map(e => ({label: e, value: e}))}
 		            defaultValue={{label:this.state.data.data_use_class, value:this.state.data.data_use_class}}
 		            onChange={this.handleChange('data_use_class')}
-		          />
+		          /> */}
+							<DropdownTreeSelect 
+								data={this.props.dataUseClassOntology} 
+								mode="radioSelect"
+								// onChange={onChange} 
+								// onAction={onAction} 
+								// onNodeToggle={onNodeToggle} 
+							/>
 			  	</GridColumn>
 
 	        <GridColumn medium={5}>

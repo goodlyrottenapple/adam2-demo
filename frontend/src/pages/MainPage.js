@@ -73,8 +73,10 @@ export default class MainPage extends Component<Props, State> {
 
   state = {
     counter:0,
-    ontologies:[],
-    ontoURL: null,
+    ontologies:{},
+    dataUseClassOntology: null,
+    restrictionObjectOntology: null,
+    ontoURL:'',
     activeOntology:null,
     tree: {
       rootId: 'root',
@@ -150,7 +152,16 @@ export default class MainPage extends Component<Props, State> {
 
   renderBuilderFromTreeItem = (item: TreeItem) => {
     const TypeTag = typeMap[item.type].type
-    return <TypeTag setData={this.storeData(item.id)} data={item.data} label={typeMap[item.type].label} settings_id={this.props.match.params.id}/>
+    return <TypeTag 
+      setData={this.storeData(item.id)} 
+      data={item.data} 
+      label={typeMap[item.type].label} 
+      settings_id={this.props.match.params.id} 
+      {...(item.type === "Term" ? {
+        dataUseClassOntology: this.state.dataUseClassOntology ? this.state.ontologies[this.state.dataUseClassOntology] : [],
+        restrictionObjectOntology: this.state.restrictionObjectOntology ? this.state.ontologies[this.state.restrictionObjectOntology] : []
+      } : {})}
+    />
   }
 
 
@@ -305,7 +316,6 @@ export default class MainPage extends Component<Props, State> {
 
   addOntology = () => {
 
-    this.state.ontologies.push(this.state.ontoURL)
 
     fetch(
       process.env.REACT_APP_API_URL+"/getOntology", 
@@ -322,7 +332,8 @@ export default class MainPage extends Component<Props, State> {
     )
     .then(res => res.json())
     .then(res => {
-      console.log(res)
+      this.setState({ontologies: {...this.state.ontologies, [this.state.ontoURL]: res}})
+
     });
   }
 
@@ -362,13 +373,13 @@ export default class MainPage extends Component<Props, State> {
             <div style={{marginTop:'0px'}}>
               <h4 style={{paddingBottom:'10px'}}>Active data use class ontology:</h4>
               <Select
-                options={this.ontologies}
-                onChange={this.handleChange}
+                options={Object.keys(this.state.ontologies).map(k => ({label: k, value: k}))}
+                onChange={e => this.setState({dataUseClassOntology: e.value})}
                 placeholder="Select active data use class ontology" />
               <h4 style={{paddingBottom:'10px'}}>Active restriction object ontology:</h4>
               <Select
-                options={this.ontologies}
-                onChange={this.handleChange}
+                options={Object.keys(this.state.ontologies).map(k => ({label: k, value: k}))}
+                onChange={e => this.setState({restrictionObjectOntology: e.value})}
                 placeholder="Select active restriction object ontology" />
             </div>
           </GridColumn>
