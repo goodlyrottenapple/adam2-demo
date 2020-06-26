@@ -6,7 +6,12 @@ from rdflib.namespace import RDFS
 from os import path
 from os import listdir
 from os.path import isfile, join
+import re
+import unidecode
 
+def slugify(text):
+    text = unidecode.unidecode(text).lower()
+    return re.sub(r'[\W_]+', '-', text)
 
 class Query(BaseModel):
   url: str
@@ -77,10 +82,12 @@ async def getOntology(payload:Query):
   '''
   Fetch new ontology
   '''
-  m = hashlib.md5()
-  m.update(payload.url.encode('utf-8'))
+  # m = hashlib.md5()
+  # m.update(payload.url.encode('utf-8'))
   # h_url = "cache/" + str(m.hexdigest())+".json"
-  h_url = str(m.hexdigest())+".json"
+  # h_url = str(m.hexdigest())+".json"
+
+  h_url = slugify(payload.url)+'.json'
 
   if path.exists(h_url):
     with open(h_url) as file:
