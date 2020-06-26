@@ -4,6 +4,8 @@ from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rdflib.namespace import RDFS
 from os import path
+from os import listdir
+from os.path import isfile, join
 
 
 class Query(BaseModel):
@@ -14,7 +16,7 @@ app = FastAPI(docs_url="/docs", redoc_url="/redoc")
 
 origins = [
   "http://localhost",
-  "http://localhost:3002"
+  "http://localhost:3000"
 ]
 
 app.add_middleware(
@@ -42,7 +44,7 @@ def firstChildrenWithLabel(g, k):
     res = []
     for c in g[k]['children']:
       res = res + firstChildrenWithLabel(g, c)
-    
+
     return res
 
 
@@ -50,16 +52,35 @@ def subClassOfTrans(g, a, b):
   if b in g[a]: return True
   for k in g[a]:
     if subClassOfTrans(g,k,b): return True
-  
+
   return False
 
 
+@app.post("/loadOntologies")
+async def loadOntologies():
+    '''
+    Fetch local .json ontology files from disk to preload dropdown options
+    '''
+    file_names = [f for f in listdir('.') if isfile(join('.', f))]
+    res = []
+    for file_name in file_names:
+        if '.json' in file_name:
+            with open(file_name) as file:
+                res.append({
+                    'name': file_name,
+                    'content': json.loads(file.read())
+                })
+    return res
 
 @app.post("/getOntology")
 async def getOntology(payload:Query):
+  '''
+  Fetch new ontology
+  '''
   m = hashlib.md5()
   m.update(payload.url.encode('utf-8'))
-  h_url = "cache/" + str(m.hexdigest())+".json"
+  # h_url = "cache/" + str(m.hexdigest())+".json"
+  h_url = str(m.hexdigest())+".json"
 
   if path.exists(h_url):
     with open(h_url) as file:
@@ -72,27 +93,27 @@ async def getOntology(payload:Query):
     notTopLevel = set()
 
     subcls_inv = {}
-   
+
     for s, _, o in g.triples((None, RDFS.subClassOf, None)):
       s_str = str(s)
       o_str = str(o)
 
-      if o_str in subcls: 
+      if o_str in subcls:
         subcls[o_str]['children'] = subcls[o_str]['children'] + [s_str]
-      else: 
+      else:
         r = g.preferredLabel(o)
         l = ''
         if len(r) > 0:
           _,l = r[0]
         subcls[o_str] = {'label': str(l), 'children':[s_str]}
 
-      if s_str not in subcls: 
+      if s_str not in subcls:
         r = g.preferredLabel(s)
         l = ''
         if len(r) > 0:
           _,l = r[0]
         subcls[s_str] = {'label': str(l), 'children':[]}
-      
+
       notTopLevel.add(s_str)
 
       if s_str not in subcls_inv:
@@ -116,5 +137,5 @@ async def getOntology(payload:Query):
 
     with open(h_url, 'w') as outfile:
       json.dump(res, outfile)
-    
+
     return res

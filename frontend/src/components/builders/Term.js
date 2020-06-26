@@ -61,12 +61,10 @@ export default class Term extends React.Component {
 		            defaultValue={{label:this.state.data.data_use_class, value:this.state.data.data_use_class}}
 		            onChange={this.handleChange('data_use_class')}
 		          /> */}
-							<DropdownTreeSelect 
-								data={this.props.dataUseClassOntology} 
+							<DropdownTreeSelect
+								data={this.props.dataUseClassOntology}
 								mode="radioSelect"
-								// onChange={onChange} 
-								// onAction={onAction} 
-								// onNodeToggle={onNodeToggle} 
+								onChange={this.handleChange('data_use_class')}
 							/>
 			  	</GridColumn>
 
@@ -90,7 +88,7 @@ export default class Term extends React.Component {
 
 	        <GridColumn medium={5}>
 			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction Object:</h5>
-	          <Select
+	          {/*}<Select
 	            className="single-select"
 	          	classNamePrefix="react-select"
 	          	menuPortalTarget={document.body}
@@ -103,7 +101,12 @@ export default class Term extends React.Component {
 	            options={["dummy1", "dummy2"].map(e => ({label: e, value: e}))}
 	            defaultValue={{label:this.state.data.restriction_class.restriction_object, value:this.state.data.restriction_class.restriction_object}}
 	            onChange={this.handleChange('restriction_object')}
-	          />
+	          />*/}
+						<DropdownTreeSelect
+							data={this.props.restrictionObjectOntology}
+							mode="radioSelect"
+							onChange={this.handleChange('restriction_object')}
+						/>
 			    </GridColumn>
 
 			  	<GridColumn medium={4}>

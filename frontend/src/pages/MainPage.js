@@ -77,7 +77,6 @@ export default class MainPage extends Component<Props, State> {
     dataUseClassOntology: null,
     restrictionObjectOntology: null,
     ontoURL:'',
-    activeOntology:null,
     tree: {
       rootId: 'root',
       items: {
@@ -92,8 +91,6 @@ export default class MainPage extends Component<Props, State> {
       },
     }
   }
-
-
 
   // componentDidMount() {
   //   fetch(
@@ -136,8 +133,6 @@ export default class MainPage extends Component<Props, State> {
   //     )
   // }
 
-
-
   storeData = (id) => {
     return (data) => {
       var newTree = {...this.state.tree}
@@ -149,21 +144,19 @@ export default class MainPage extends Component<Props, State> {
     }
   }
 
-
   renderBuilderFromTreeItem = (item: TreeItem) => {
     const TypeTag = typeMap[item.type].type
-    return <TypeTag 
-      setData={this.storeData(item.id)} 
-      data={item.data} 
-      label={typeMap[item.type].label} 
-      settings_id={this.props.match.params.id} 
+    return <TypeTag
+      setData={this.storeData(item.id)}
+      data={item.data}
+      label={typeMap[item.type].label}
+      settings_id={this.props.match.params.id}
       {...(item.type === "Term" ? {
         dataUseClassOntology: this.state.dataUseClassOntology ? this.state.ontologies[this.state.dataUseClassOntology] : [],
         restrictionObjectOntology: this.state.restrictionObjectOntology ? this.state.ontologies[this.state.restrictionObjectOntology] : []
       } : {})}
     />
   }
-
 
   renderItem = ({ item, onExpand, onCollapse, provided }: RenderItemParams) => {
 
@@ -240,7 +233,6 @@ export default class MainPage extends Component<Props, State> {
     }
   }
 
-
   onDelete = (id: string) => {
     const { counter, tree, queries } = this.state;
     const newTree = this.deleteItem(tree, id);
@@ -251,9 +243,6 @@ export default class MainPage extends Component<Props, State> {
       tree: newTree,
     });
   }
-
-
-
 
   onDragEnd = (
     source: TreeSourcePosition,
@@ -280,13 +269,12 @@ export default class MainPage extends Component<Props, State> {
   };
 
   handleChange = selectedOption => {
-        const { counter, tree } = this.state;
-        const newTree = this.addItemToRoot(tree, counter, selectedOption.value, selectedOption.canHaveChildren, selectedOption.childrenType, selectedOption.rootNesting);
-
-        this.setState({
-          counter: counter+1,
-          tree: newTree,
-        });
+    const { counter, tree } = this.state;
+    const newTree = this.addItemToRoot(tree, counter, selectedOption.value, selectedOption.canHaveChildren, selectedOption.childrenType, selectedOption.rootNesting);
+    this.setState({
+      counter: counter+1,
+      tree: newTree,
+    });
   };
 
   // saveTree = () => {
@@ -314,11 +302,31 @@ export default class MainPage extends Component<Props, State> {
   //       })
   // }
 
-  addOntology = () => {
-
-
+  loadOntologies = () => {
     fetch(
-      process.env.REACT_APP_API_URL+"/getOntology", 
+      process.env.REACT_APP_API_URL+"/loadOntologies",
+      {
+        method:'POST',
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      }
+    )
+    .then(res => res.json())
+    .then(res => {
+      // Load each ontology from disk into the dropdown
+      for (var i = 0; i < res.length; i++) {
+        this.setState({ontologies: {...this.state.ontologies, [res[i]['name']]: res[i]['content']}})
+      }
+    });
+  }
+
+  addOntology = () => {
+    fetch(
+      process.env.REACT_APP_API_URL+"/getOntology",
       {
         method:'POST',
         headers: {
@@ -333,19 +341,19 @@ export default class MainPage extends Component<Props, State> {
     .then(res => res.json())
     .then(res => {
       this.setState({ontologies: {...this.state.ontologies, [this.state.ontoURL]: res}})
-
     });
   }
-
-
 
   mkADAM(tree){
     return collectChildren(tree, tree.items.root.children, true).reduce((acc,c) => mergeObjs(acc,c), {})
   }
 
+  componentDidMount = () => {
+    this.loadOntologies()
+  }
+
   render() {
     const { tree } = this.state;
-
     return (
       <ContentWrapper>
         <PageTitle>ADA-M 2.0 demo</PageTitle>
