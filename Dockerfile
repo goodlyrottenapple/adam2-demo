@@ -28,13 +28,11 @@ COPY ./backend /app
 COPY nginx.conf /etc/nginx/
 
 
-COPY --from=frontend /app/frontend/build /app/discovery
+COPY --from=frontend /app/frontend/build /app/ui
 
 RUN mkdir /var/sockets
-RUN mkdir /app/uploads
 
 COPY ./start.sh /app
-COPY ./docs /app/docs
 
 
 RUN chmod +x /app/start.sh
