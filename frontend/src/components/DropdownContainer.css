@@ -1,0 +1,54 @@
+.react-dropdown-tree-select .dropdown {
+  width: 100%;
+}
+
+.react-dropdown-tree-select .dropdown:focus {
+  outline:0;
+}
+
+.react-dropdown-tree-select .dropdown .dropdown-trigger {
+  background-color: rgb(244, 245, 247);
+  border: 2px solid #F4F5F7;
+  border-radius: 3px;
+}
+
+.dropdown-trigger:focus {
+  outline:0;
+}
+
+.tag-item .search{
+  background-color: transparent;
+  color: #172B4D;
+  font-size: 14px;
+  border-bottom-width: 0px;
+}
+
+.tag {
+  background-color: white;
+  padding-left: 5px;
+}
+
+.tag-remove {
+  position: relative;
+  bottom:2px;
+}
+
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom::after {
+  content: url(../images/arrow.svg);
+}
+
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top::after {
+  content: url(../images/arrow.svg);
+}
+
+.react-dropdown-tree-select .dropdown .dropdown-content {
+  background-color: hsl(0,0%,100%);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px hsla(0,0%,0%,0.1),0 4px 11px hsla(0,0%,0%,0.1);
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.toggle{
+  font-style: normal;
+}

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DropdownTreeSelect from 'react-dropdown-tree-select';
 import isEqual from 'lodash/isEqual';
 import 'react-dropdown-tree-select/dist/styles.css';
+import './DropdownContainer.css'
 
 
 export default class DropdownContainer extends Component {
