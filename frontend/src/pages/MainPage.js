@@ -54,9 +54,8 @@ const mergeObjs = (a,b) => {
 
 const collectChildren = (tree, children, isRoot = false) => {
   return children.map(c => {
-    const c_children = collectChildren(tree, tree.items[c].children);
-    const res = tree.items[c].children > 0 ? {...tree.items[c].data, child_terms: c_children} : tree.items[c].data;
-    if(isRoot && tree.items[c].rootNesting) return  tree.items[c].rootNesting(res)
+    const res = tree.items[c].children.length > 0 ? {...tree.items[c].data, child_terms: collectChildren(tree, tree.items[c].children)} : tree.items[c].data;
+    if(isRoot && tree.items[c].rootNesting) return tree.items[c].rootNesting(res)
     else return res;
   });
 }
@@ -408,6 +407,11 @@ export default class MainPage extends Component<Props, State> {
             <AkCodeBlock
               language="json"
               text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
+              showLineNumbers={false}/>
+              <br/>
+            <AkCodeBlock
+              language="json"
+              text={JSON.stringify(this.state.tree, null, 2)}
               showLineNumbers={false}/>
           </GridColumn>
 
