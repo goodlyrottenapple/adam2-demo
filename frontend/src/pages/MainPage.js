@@ -302,25 +302,39 @@ export default class MainPage extends Component<Props, State> {
   // }
 
   loadOntologies = () => {
-    fetch(
-      process.env.REACT_APP_API_URL+"/loadOntologies",
-      {
-        method:'POST',
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      }
-    )
-    .then(res => res.json())
-    .then(res => {
-      // Load each ontology from disk into the dropdown
-      for (var i = 0; i < res.length; i++) {
-        this.setState({ontologies: {...this.state.ontologies, [res[i]['name']]: res[i]['content']}})
-      }
-    });
+    const adam2demoOntologies = localStorage.getItem('adam2demoOntologies')
+    if(adam2demoOntologies){
+      this.setState({ontologies: JSON.parse(adam2demoOntologies)})
+    }
+    const adam2demoDataUseClassOntology = localStorage.getItem('adam2demoDataUseClassOntology')
+    if(adam2demoDataUseClassOntology){
+      this.setState({dataUseClassOntology: adam2demoDataUseClassOntology})
+    }
+    const adam2demoRestrictionObjectOntology = localStorage.getItem('adam2demoRestrictionObjectOntology')
+    if(adam2demoRestrictionObjectOntology){
+      this.setState({restrictionObjectOntology: adam2demoRestrictionObjectOntology})
+    }
+
+
+    // fetch(
+    //   process.env.REACT_APP_API_URL+"/loadOntologies",
+    //   {
+    //     method:'POST',
+    //     headers: {
+    //       "Access-Control-Allow-Origin": "*",
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json',
+    //       'X-Requested-With': 'XMLHttpRequest'
+    //     }
+    //   }
+    // )
+    // .then(res => res.json())
+    // .then(res => {
+    //   // Load each ontology from disk into the dropdown
+    //   for (var i = 0; i < res.length; i++) {
+    //     this.setState({ontologies: {...this.state.ontologies, [res[i]['name']]: res[i]['content']}})
+    //   }
+    // });
   }
 
   addOntology = () => {
@@ -339,7 +353,9 @@ export default class MainPage extends Component<Props, State> {
     )
     .then(res => res.json())
     .then(res => {
-      this.setState({ontologies: {...this.state.ontologies, [this.state.ontoURL]: res}})
+      const adam2demoOntologies = {...this.state.ontologies, [this.state.ontoURL]: res};
+      this.setState({ontologies: adam2demoOntologies});
+      localStorage.setItem('adam2demoOntologies', JSON.stringify(adam2demoOntologies))
     });
   }
 
@@ -347,7 +363,7 @@ export default class MainPage extends Component<Props, State> {
     return collectChildren(tree, tree.items.root.children, true).reduce((acc,c) => mergeObjs(acc,c), {})
   }
 
-  componentDidMount = () => {
+  componentWillMount = () => {
     this.loadOntologies()
   }
 
@@ -381,12 +397,20 @@ export default class MainPage extends Component<Props, State> {
               <h4 style={{paddingBottom:'10px'}}>Active data use class ontology:</h4>
               <Select
                 options={Object.keys(this.state.ontologies).map(k => ({label: k, value: k}))}
-                onChange={e => this.setState({dataUseClassOntology: e.value})}
+                onChange={e => {
+                  this.setState({dataUseClassOntology: e.value});
+                  localStorage.setItem('adam2demoDataUseClassOntology', e.value)
+                }}
+                defaultValue={this.state.dataUseClassOntology ? {label:this.state.dataUseClassOntology, value:this.state.dataUseClassOntology} : null}
                 placeholder="Select active data use class ontology" />
               <h4 style={{paddingBottom:'10px'}}>Active restriction object ontology:</h4>
               <Select
                 options={Object.keys(this.state.ontologies).map(k => ({label: k, value: k}))}
-                onChange={e => this.setState({restrictionObjectOntology: e.value})}
+                onChange={e => {
+                  this.setState({restrictionObjectOntology: e.value})
+                  localStorage.setItem('adam2demoRestrictionObjectOntology', e.value)
+                }}
+                defaultValue={this.state.restrictionObjectOntology ? {label:this.state.restrictionObjectOntology, value:this.state.restrictionObjectOntology} : null}
                 placeholder="Select active restriction object ontology" />
             </div>
           </GridColumn>
