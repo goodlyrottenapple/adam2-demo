@@ -7,22 +7,19 @@ const permissionModeEnum = ["UNKNOWN", "ALL_TERMS_PERMITTED_BY_DEFAULT", "ALL_TE
 
 export default class PermissionMode extends React.Component {
 
-	state = {
-		data: this.props.data ? this.props.data : {
-			permissionMode:permissionModeEnum[0]
-		},
+	state = this.props.data ? this.props.data : {
+		permissionMode:permissionModeEnum[0]
 	}
 
 
   componentDidMount() {
-    this.props.setData(this.state.data);
+    this.props.setData(this.state);
   }
 
 
-	handleChange = prop_name => e =>  {
-		const newData = {...this.state.data};
-		newData[prop_name] = e.value;
-		this.setState({data: newData});
+	handleChange = e =>  {
+		const newData = {permissionMode:e.value};
+		this.setState(newData);
 		this.props.setData(newData);
 	}
 
@@ -45,8 +42,8 @@ export default class PermissionMode extends React.Component {
                   }),
                 }}
             options={permissionModeEnum.map(e => ({label: e, value: e}))}
-            defaultValue={{label:this.state.data.permissionMode, value:this.state.data.permissionMode}}
-            onChange={this.handleChange('PermissionMode')}
+            defaultValue={{label:this.state.permissionMode, value:this.state.permissionMode}}
+            onChange={this.handleChange}
           />
 		    </GridColumn>
 
