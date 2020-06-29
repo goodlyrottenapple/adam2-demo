@@ -2,6 +2,7 @@
   "name": "adam2-demo",
   "version": "1.0.0",
   "description": "Get your ADG3 on with this sample project using Atlaskit React components",
+  "homepage": "./",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
