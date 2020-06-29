@@ -403,15 +403,10 @@ export default class MainPage extends Component<Props, State> {
             <div style={{marginTop:'0px'}}>
             {/* <Button appearance="primary" onClick={this.saveTree}>Save settings</Button> */}
             </div>
-            <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>ADA-M:</h4>
+            <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>ADA-M profile:</h4>
             <AkCodeBlock
               language="json"
               text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
-              showLineNumbers={false}/>
-              <br/>
-            <AkCodeBlock
-              language="json"
-              text={JSON.stringify(this.state.tree, null, 2)}
               showLineNumbers={false}/>
           </GridColumn>
 

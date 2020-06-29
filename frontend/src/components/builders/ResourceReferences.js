@@ -7,7 +7,7 @@ export default class ResourceReferences extends React.Component {
 
 	state = {
 		data: this.props.data ? this.props.data : {
-			resourceReferences:['']
+			resourceReferences:[]
 		},
 	}
 
@@ -15,7 +15,7 @@ export default class ResourceReferences extends React.Component {
     this.props.setData(this.state.data);
   }
 
-	handleChange = prop_name => e =>  {
+	handleChange = e =>  {
 		const newData = {...this.state.data};
 
 		// Update the contacts array
@@ -34,7 +34,7 @@ export default class ResourceReferences extends React.Component {
 						<Textfield
 							name="reference"
 							defaultValue={this.state.data.resourceReferences[0]}
-							onChange={this.handleChange('reference')}
+							onChange={this.handleChange}
 						/>
 		  		</GridColumn>
 				</Grid>

@@ -35,6 +35,7 @@
     "@atlaskit/toggle": "^8.1.6",
     "@atlaskit/tree": "^7.1.2",
     "antd": "^4.0.3",
+    "lodash": "^4.17.15",
     "prop-types": "^15.6.0",
     "react": "^16.8.2",
     "react-bootstrap-table-next": "^4.0.0",
