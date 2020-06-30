@@ -57,7 +57,7 @@ export default class DUOTerms extends React.Component {
       )
       .then(res => res.json())
       .then(res => {
-        const fuse = new Fuse(Object.keys(duoTerms).map(k => ({label: k, value:duoTerms[k]})), options);
+        const fuse = new Fuse(Object.keys(res).map(k => ({label: k, value:res[k]})), options);
         this.setState({fuse: fuse});
         localStorage.setItem('adam2demoDUOTerms', JSON.stringify(res))
       });
