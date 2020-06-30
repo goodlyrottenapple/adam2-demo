@@ -37,6 +37,7 @@
     "@atlaskit/toggle": "^8.1.6",
     "@atlaskit/tree": "^7.1.2",
     "antd": "^4.0.3",
+    "fuse.js": "^6.4.0",
     "lodash": "^4.17.15",
     "prop-types": "^15.6.0",
     "react": "^16.8.2",

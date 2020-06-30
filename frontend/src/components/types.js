@@ -8,6 +8,8 @@ import ResourceReferences from './builders/ResourceReferences';
 import ResourceContacts from './builders/ResourceContacts';
 import ResourceOrganisations from './builders/ResourceOrganisations';
 import Term from './builders/Term';
+import DUOTerms from './builders/DUOTerms';
+
 
 export const typeMap = {
     'ProfileProperties': {
@@ -56,5 +58,10 @@ export const typeMap = {
 			canHaveChildren: true,
 			childrenType: ['Term'],
 			rootNesting: (e) => ({terms:[e]})
+    },
+    'DUOTerms': {
+    	type: DUOTerms,
+			label: 'Terms from DUO',
+			canHaveChildren: false
     }
   }

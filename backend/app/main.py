@@ -2,6 +2,7 @@ import rdflib, json, hashlib
 from fastapi import Depends, FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 from rdflib.namespace import RDFS
 from os import path
 from os import listdir
@@ -15,13 +16,14 @@ def slugify(text):
 
 class Query(BaseModel):
   url: str
+  collapseTree: Optional[bool]
 
 
 app = FastAPI(docs_url="/docs", redoc_url="/redoc")
 
 origins = [
   "http://localhost",
-  "http://localhost:3000"
+  "http://localhost:3002"
 ]
 
 app.add_middleware(
@@ -86,8 +88,10 @@ async def getOntology(payload:Query):
   # m.update(payload.url.encode('utf-8'))
   # h_url = "cache/" + str(m.hexdigest())+".json"
   # h_url = str(m.hexdigest())+".json"
-
-  h_url = slugify(payload.url)+'.json'
+  if payload.collapseTree:
+    h_url = slugify(payload.url)+'-collapsed.json'
+  else:
+    h_url = slugify(payload.url)+'.json'
 
   if path.exists(h_url):
     with open(h_url) as file:
@@ -95,54 +99,73 @@ async def getOntology(payload:Query):
   else:
     g = rdflib.Graph()
     g.load(payload.url)
+    
+    if payload.collapseTree:
+      res = {}
+      for s, _, o in g.triples((None, RDFS.subClassOf, None)):
+        s_str = str(s)
+        o_str = str(o)
 
-    subcls = {}
-    notTopLevel = set()
+        if s_str not in res:
+          r = g.preferredLabel(s)
+          if len(r) > 0:
+            _,l = r[0]
+            res[s_str] = l
+        if o_str not in res:
+          r = g.preferredLabel(o)
+          if len(r) > 0:
+            _,l = r[0]
+            res[o_str] = l
+      return res
 
-    subcls_inv = {}
+    else:
+      subcls = {}
+      notTopLevel = set()
 
-    for s, _, o in g.triples((None, RDFS.subClassOf, None)):
-      s_str = str(s)
-      o_str = str(o)
+      subcls_inv = {}
 
-      if o_str in subcls:
-        subcls[o_str]['children'] = subcls[o_str]['children'] + [s_str]
-      else:
-        r = g.preferredLabel(o)
-        l = ''
-        if len(r) > 0:
-          _,l = r[0]
-        subcls[o_str] = {'label': str(l), 'children':[s_str]}
+      for s, _, o in g.triples((None, RDFS.subClassOf, None)):
+        s_str = str(s)
+        o_str = str(o)
 
-      if s_str not in subcls:
-        r = g.preferredLabel(s)
-        l = ''
-        if len(r) > 0:
-          _,l = r[0]
-        subcls[s_str] = {'label': str(l), 'children':[]}
+        if o_str in subcls:
+          subcls[o_str]['children'] = subcls[o_str]['children'] + [s_str]
+        else:
+          r = g.preferredLabel(o)
+          l = ''
+          if len(r) > 0:
+            _,l = r[0]
+          subcls[o_str] = {'label': str(l), 'children':[s_str]}
 
-      notTopLevel.add(s_str)
+        if s_str not in subcls:
+          r = g.preferredLabel(s)
+          l = ''
+          if len(r) > 0:
+            _,l = r[0]
+          subcls[s_str] = {'label': str(l), 'children':[]}
 
-      if s_str not in subcls_inv:
-        subcls_inv[s_str] = {o_str}
-      else:
-        subcls_inv[s_str].add(o_str)
+        notTopLevel.add(s_str)
 
-      if o_str not in subcls_inv:
-        subcls_inv[o_str] = set()
+        if s_str not in subcls_inv:
+          subcls_inv[s_str] = {o_str}
+        else:
+          subcls_inv[s_str].add(o_str)
+
+        if o_str not in subcls_inv:
+          subcls_inv[o_str] = set()
 
 
-    allTopLevelWithLabels = [x for (k,v) in subcls.items() for x in firstChildrenWithLabel(subcls, k) if k not in notTopLevel]
-    allTopLevelWithLabelsFiltered = []
-    for x in allTopLevelWithLabels:
-      notSubClassOfAny = True
-      for y in allTopLevelWithLabels:
-        if subClassOfTrans(subcls_inv, x, y): notSubClassOfAny = False
-      if notSubClassOfAny: allTopLevelWithLabelsFiltered.append(x)
-    # print([subcls[x]['label'] for x in allTopLevelWithLabelsFiltered])
-    res = [recAddChildren(subcls, set(), k, subcls[k]) for k in allTopLevelWithLabelsFiltered]
+      allTopLevelWithLabels = [x for (k,v) in subcls.items() for x in firstChildrenWithLabel(subcls, k) if k not in notTopLevel]
+      allTopLevelWithLabelsFiltered = []
+      for x in allTopLevelWithLabels:
+        notSubClassOfAny = True
+        for y in allTopLevelWithLabels:
+          if subClassOfTrans(subcls_inv, x, y): notSubClassOfAny = False
+        if notSubClassOfAny: allTopLevelWithLabelsFiltered.append(x)
+      # print([subcls[x]['label'] for x in allTopLevelWithLabelsFiltered])
+      res = [recAddChildren(subcls, set(), k, subcls[k]) for k in allTopLevelWithLabelsFiltered]
 
-    with open(h_url, 'w') as outfile:
-      json.dump(res, outfile)
+      with open(h_url, 'w') as outfile:
+        json.dump(res, outfile)
 
-    return res
+      return res
