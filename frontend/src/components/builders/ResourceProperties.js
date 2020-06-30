@@ -2,6 +2,7 @@ import React from 'react';
 import Select from '@atlaskit/select';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
+import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
 
 const resourceDataLevelEnum = ["UNKNOWN", "DATABASE", "METADATA", "SUMMARISED", "DATASET", "RECORDSET", "RECORD", "RECORDFIELD"]
 
@@ -40,7 +41,7 @@ export default class ResourceProperties extends React.Component {
 		return (
 		  <div>
 			  <Grid>
-			  	<GridColumn medium={6}>
+			  	<GridColumn>
 						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Resource Name:</h5>
 						<Textfield
 							name="resourceName"
@@ -49,7 +50,7 @@ export default class ResourceProperties extends React.Component {
 						/>
 			  	</GridColumn>
 
-					<GridColumn medium={6}>
+					<GridColumn>
 						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Resource References:</h5>
 						<Textfield
 							name="resourceReferences"
@@ -59,15 +60,17 @@ export default class ResourceProperties extends React.Component {
 			  	</GridColumn>
 
 					<GridColumn medium={12}>
-			  	<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Description:</h5>
-			  	<Textfield
-			      name="resourceDescription"
-			      defaultValue={this.state.data.resourceDescription}
+					<div className="textarea">
+			  	<FieldTextAreaStateless
+						name="resourceDescription"
+						label="Description:"
+						style={{width:'100%'}}
+			      value={this.state.data.resourceDescription}
 			      onChange={this.handleChange('resourceDescription')}
-			    />
+			    /></div>
 			  	</GridColumn>
 
-					<GridColumn medium={6}>
+					<GridColumn>
 			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data Level:</h5>
 	          <Select
 	            className="single-select"

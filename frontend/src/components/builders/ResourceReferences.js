@@ -29,7 +29,7 @@ export default class ResourceReferences extends React.Component {
 		return (
 		  <div>
 		  	<Grid>
-		  		<GridColumn medium={8}>
+		  		<GridColumn>
 						<h5 style={{paddingBottom: '0.5em'}}>Resource Reference (Citation, URL, DOI, etc.):</h5>
 						<Textfield
 							name="reference"

@@ -52,3 +52,12 @@
 .toggle{
   font-style: normal;
 }
+
+
+.react-dropdown-tree-select > div > a {
+  width: calc(100% - 12px);
+}
+
+.react-dropdown-tree-select > div > a > ul > li {
+  width: calc(100% - 34px);
+}

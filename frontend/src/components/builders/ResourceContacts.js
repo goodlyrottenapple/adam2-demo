@@ -29,16 +29,16 @@ export default class Contact extends React.Component {
 		return (
 		  <div>
 		  <Grid>
-		  	<GridColumn medium={4}>
-					<h5 style={{paddingBottom: '0.5em'}}>Contact Name:</h5>
+		  	<GridColumn>
+					<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Contact Name:</h5>
 					<Textfield
 						name="name"
 						defaultValue={this.state.data.resourceContacts[0].name}
 						onChange={this.handleChange('name')}
 					/>
 		  	</GridColumn>
-				<GridColumn medium={5}>
-		  		<h5 style={{paddingBottom: '0.5em'}}>Contact Email:</h5>
+				<GridColumn>
+		  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Contact Email:</h5>
           <Textfield
 		      name="email"
 		      defaultValue={this.state.data.resourceContacts[0].email}

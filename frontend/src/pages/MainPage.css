@@ -1,67 +1,56 @@
-.editable-cell {
-  position: relative;
+div > h5 {
+  color: #6B778C;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3333333333333333;
 }
 
-.editable-cell-value-wrap {
-  padding: 5px 12px;
-  cursor: pointer;
-  min-height: 20px;
+.textarea > div > div {
+  width: 100%;
 }
 
-.editable-row:hover .editable-cell-value-wrap {
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  padding: 4px 11px;
+.content {
+  padding: 20px;
 }
 
-[data-theme='dark'] .editable-row:hover .editable-cell-value-wrap {
-  border: 1px solid #434343;
+.cols {
+  display: flex;
 }
 
-.settingsTable tr:hover {
-  background-color: #f8f9fa;
+.col1, .col2, .col3 {
+  margin:10px;
 }
 
-.settingsTable input {
-	height: 20px;
-	width: 100%
+.col1, .col3 {
+  width: 25%;
 }
 
-.ant-table thead > tr > th, .ant-table tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
-    position: relative;
-    padding: 16px 16px;
-    overflow-wrap: break-word;
+.col2 {
+  width: 45%;
 }
 
-.ant-table-column-sorter-up + .ant-table-column-sorter-down {
-    margin-top: -0.3em;
+.col3 {
+  width: 30%;
 }
 
-.ant-table-column-sorter-up, .ant-table-column-sorter-down {
-    display: inline-block;
-    font-size: 11px;
+/* Use a media query to add a breakpoint at 800px: */
+@media screen and (max-width: 960px) {
+  .cols {
+    flex-wrap: wrap
+  }
+  .col2 {
+    width: calc(75% - 40px);
+  }
+  .col3 {
+    width: 100%;
+  }
 }
 
-.ant-table-column-sorter {
-    margin-top: 0.15em;
-    margin-bottom: -0.15em;
-    margin-left: 8px;
-    color: #bfbfbf;
-}
-
-.ant-table-column-sorter-inner {
-    display: -webkit-inline-box;
-    display: -ms-inline-flexbox;
-    display: inline-flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-
-.ant-table-column-sorter-up.active, .ant-table-column-sorter-down.active {
-    color: #1890ff;
+@media screen and (max-width: 640px) {
+  .cols {
+    flex-wrap: wrap
+  }
+  .col1, .col2, .col3 {
+    width: 100%;
+  }
 }

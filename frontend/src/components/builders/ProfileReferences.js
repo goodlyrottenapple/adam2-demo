@@ -7,7 +7,7 @@ export default class ProfileReferences extends React.Component {
 
 	state = {
 		data: this.props.data ? this.props.data : {
-			profileReferences:['']
+			profileReferences:[]
 		},
 	}
 
@@ -27,18 +27,16 @@ export default class ProfileReferences extends React.Component {
 
 	render() {
 		return (
-		  <div>
-		  	<Grid>
-		  		<GridColumn medium={8}>
-						<h5 style={{paddingBottom: '0.5em'}}>Profile Reference (Citation, URL, DOI, etc.):</h5>
-						<Textfield
-							name="reference"
-							defaultValue={this.state.data.profileReferences[0]}
-							onChange={this.handleChange('reference')}
-						/>
-		  		</GridColumn>
-				</Grid>
-		  </div>
+			<Grid>
+				<GridColumn medium={14}>
+					<h5 style={{paddingBottom: '0.5em'}}>Profile Reference (Citation, URL, DOI, etc.):</h5>
+					<Textfield
+						name="reference"
+						defaultValue={this.state.data.profileReferences[0]}
+						onChange={this.handleChange('reference')}
+					/>
+				</GridColumn>
+			</Grid>
 		);
 	}
 }

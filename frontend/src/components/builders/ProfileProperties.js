@@ -31,7 +31,7 @@ export default class PRofileProperties extends React.Component {
 		return (
 		  <div>
 			  <Grid>
-			  	<GridColumn medium={5}>
+			  	<GridColumn medium={12}>
 						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Profile Name:</h5>
 						<Textfield
 							name="profileName"
@@ -40,7 +40,7 @@ export default class PRofileProperties extends React.Component {
 						/>
 			  	</GridColumn>
 
-					<GridColumn medium={5}>
+					<GridColumn >
 						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Profile Version:</h5>
 						<Textfield
 							name="profileVersion"
@@ -49,7 +49,7 @@ export default class PRofileProperties extends React.Component {
 						/>
 			  	</GridColumn>
 
-					<GridColumn medium={5}>
+					<GridColumn>
 						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Profile Create Date:</h5>
 						<Textfield
 							name="profileCreateDate"

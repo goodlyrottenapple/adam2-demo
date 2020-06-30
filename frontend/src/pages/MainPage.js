@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ContentWrapper from '../components/ContentWrapper';
 import PageTitle from '../components/PageTitle';
 import Textfield from '@atlaskit/textfield';
 
@@ -24,6 +23,7 @@ import { AkCodeBlock } from '@atlaskit/code';
 
 import { typeMap } from '../components/types'
 
+import './MainPage.css'
 
 const PADDING_PER_LEVEL = 30;
 
@@ -370,11 +370,10 @@ export default class MainPage extends Component<Props, State> {
   render() {
     const { tree } = this.state;
     return (
-      <ContentWrapper>
+      <div className="content">
         <PageTitle>ADA-M 2.0 demo</PageTitle>
-        <Grid>
-
-          <GridColumn medium={4}>
+        <div className="cols">
+          <div className="col1">
             <h4 style={{marginTop:'23px', paddingBottom:'10px'}}>Profile Options:</h4>
             <div style={{marginTop:'0px'}}>
               {/* <h4 style={{paddingBottom:'10px'}}>Add a property:</h4> */}
@@ -384,16 +383,18 @@ export default class MainPage extends Component<Props, State> {
                 placeholder="Select a property to add" />
             </div>
 
-            <h4 style={{marginTop:'23px', paddingBottom:'10px'}}>Ontology Sources:</h4>
+            <h4 style={{marginTop:'23px'}}>Current ontology Sources:</h4>
+
+            <ul style={{paddingLeft:'20px', paddingBottom:'10px'}}>{Object.keys(this.state.ontologies).map(k => (<li>{k}</li>))}</ul>
             <div style={{marginTop:'0px'}}>
               <Textfield
                 name="ontoURL"
                 defaultValue={this.state.ontoURL}
                 onChange={e => this.setState({ontoURL: e.target.value})}
               />
-              <Button appearance="primary" onClick={this.addOntology}>Add Ontology</Button>
+              <Button appearance="primary" style={{marginTop:'10px'}} onClick={this.addOntology}>Add Ontology</Button>
             </div>
-            <div style={{marginTop:'0px'}}>
+            <div style={{marginTop:'23px'}}>
               <h4 style={{paddingBottom:'10px'}}>Active data use class ontology:</h4>
               <Select
                 options={Object.keys(this.state.ontologies).map(k => ({label: k, value: k}))}
@@ -413,9 +414,9 @@ export default class MainPage extends Component<Props, State> {
                 defaultValue={this.state.restrictionObjectOntology ? {label:this.state.restrictionObjectOntology, value:this.state.restrictionObjectOntology} : null}
                 placeholder="Select active restriction object ontology" />
             </div>
-          </GridColumn>
+          </div>
 
-          <GridColumn medium={8}>
+          <div className="col2">
             <Tree
               tree={tree}
               renderItem={this.renderItem}
@@ -424,18 +425,22 @@ export default class MainPage extends Component<Props, State> {
               isDragEnabled
               isNestingEnabled
             />
-            <div style={{marginTop:'0px'}}>
-            {/* <Button appearance="primary" onClick={this.saveTree}>Save settings</Button> */}
-            </div>
+            {/* <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>ADA-M profile:</h4>
+            <AkCodeBlock
+              language="json"
+              text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
+              showLineNumbers={false}/> */}
+          </div>
+
+          <div className="col3">
             <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>ADA-M profile:</h4>
             <AkCodeBlock
               language="json"
               text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
               showLineNumbers={false}/>
-          </GridColumn>
-
-        </Grid>
-      </ContentWrapper>
+          </div>
+        </div>
+      </div>
     );
   }
 }
