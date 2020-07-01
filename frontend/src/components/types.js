@@ -22,7 +22,7 @@ export const typeMap = {
       type: ProfileReferences,
       label: 'Profile References (add more)',
       canHaveChildren: false,
-      multipleInstances: false,
+      multipleInstances: true,
     },
     'ResourceProperties': {
     	type: ResourceProperties,
@@ -65,7 +65,8 @@ export const typeMap = {
 			label: 'Term (add more)',
 			canHaveChildren: true,
 			childrenType: ['Term'],
-			rootNesting: (e) => ({terms:[e]})
+      rootNesting: (e) => ({terms:[e]}),
+      multipleInstances: true,
     },
     'DUOTerms': {
     	type: DUOTerms,
