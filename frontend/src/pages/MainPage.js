@@ -60,6 +60,14 @@ const collectChildren = (tree, children, isRoot = false) => {
   });
 }
 
+const builders = Object.keys(typeMap).filter(e => 'type' in typeMap[e]).map(e => {return {
+  value:e,
+  label: typeMap[e].label,
+  canHaveChildren:typeMap[e].canHaveChildren,
+  childrenType:typeMap[e].childrenType,
+  rootNesting:typeMap[e].rootNesting,
+ }})
+
 export default class MainPage extends Component<Props, State> {
 
   state = {
@@ -80,11 +88,8 @@ export default class MainPage extends Component<Props, State> {
           canHaveChildren: true
         },
       },
-    },
-    builders:[],
+    }
   }
-
-  
 
   // componentDidMount() {
   //   fetch(
@@ -233,24 +238,8 @@ export default class MainPage extends Component<Props, State> {
     const newQueries = {...queries}
     delete newQueries[id];
 
-    const builders = Object.keys(typeMap)
-      .filter(e => 'type' in typeMap[e] && 
-        // we filter out any builders which have multipleInstances set to false and already appear in the tree
-        (typeMap[e].multipleInstances || !Object.keys(newTree.items).map(k => newTree.items[k].type ? newTree.items[k].type : "").includes(e) ))
-      .map(e => {        
-        return {
-          value:e,
-          label: typeMap[e].label,
-          canHaveChildren:typeMap[e].canHaveChildren,
-          childrenType:typeMap[e].childrenType,
-          rootNesting:typeMap[e].rootNesting,
-        }})
-
-
-
     this.setState({
       tree: newTree,
-      builders: builders,
     });
   }
 
@@ -281,25 +270,9 @@ export default class MainPage extends Component<Props, State> {
   handleChange = selectedOption => {
     const { counter, tree } = this.state;
     const newTree = this.addItemToRoot(tree, counter, selectedOption.value, selectedOption.canHaveChildren, selectedOption.childrenType, selectedOption.rootNesting);
-    
-    const builders = Object.keys(typeMap)
-      .filter(e => 'type' in typeMap[e] && 
-        // we filter out any builders which have multipleInstances set to false and already appear in the tree
-        (typeMap[e].multipleInstances || !Object.keys(newTree.items).map(k => newTree.items[k].type ? newTree.items[k].type : "").includes(e) ))
-      .map(e => {        
-        return {
-          value:e,
-          label: typeMap[e].label,
-          canHaveChildren:typeMap[e].canHaveChildren,
-          childrenType:typeMap[e].childrenType,
-          rootNesting:typeMap[e].rootNesting,
-        }})
-
-
     this.setState({
       counter: counter+1,
       tree: newTree,
-      builders: builders,
     });
   };
 
@@ -391,20 +364,6 @@ export default class MainPage extends Component<Props, State> {
   }
 
   componentWillMount = () => {
-
-    const builders = Object.keys(typeMap)
-      .filter(e => 'type' in typeMap[e] && 
-        // we filter out any builders which have multipleInstances set to false and already appear in the tree
-        (typeMap[e].multipleInstances || !Object.keys(this.state.tree.items).map(k => this.state.tree.items[k].type ? this.state.tree.items[k].type : "").includes(e) ))
-      .map(e => {
-        return {
-          value:e,
-          label: typeMap[e].label,
-          canHaveChildren:typeMap[e].canHaveChildren,
-          childrenType:typeMap[e].childrenType,
-          rootNesting:typeMap[e].rootNesting,
-        }})
-    this.setState({builders:builders})
     this.loadOntologies()
   }
 
@@ -419,8 +378,13 @@ export default class MainPage extends Component<Props, State> {
             <div style={{marginTop:'0px'}}>
               {/* <h4 style={{paddingBottom:'10px'}}>Add a property:</h4> */}
               <Select
-                options={this.state.builders}
+                options={builders}
                 onChange={this.handleChange}
+                isOptionDisabled={option => 
+                  !typeMap[option.value].multipleInstances && 
+                  Object.keys(this.state.tree.items)
+                    .map(k => this.state.tree.items[k].type ? this.state.tree.items[k].type : "")
+                    .includes(option.value)}
                 placeholder="Select a property to add" />
             </div>
 
