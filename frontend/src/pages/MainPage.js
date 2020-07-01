@@ -233,8 +233,24 @@ export default class MainPage extends Component<Props, State> {
     const newQueries = {...queries}
     delete newQueries[id];
 
+    const builders = Object.keys(typeMap)
+      .filter(e => 'type' in typeMap[e] && 
+        // we filter out any builders which have multipleInstances set to false and already appear in the tree
+        (typeMap[e].multipleInstances || !Object.keys(newTree.items).map(k => newTree.items[k].type ? newTree.items[k].type : "").includes(e) ))
+      .map(e => {        
+        return {
+          value:e,
+          label: typeMap[e].label,
+          canHaveChildren:typeMap[e].canHaveChildren,
+          childrenType:typeMap[e].childrenType,
+          rootNesting:typeMap[e].rootNesting,
+        }})
+
+
+
     this.setState({
       tree: newTree,
+      builders: builders,
     });
   }
 
