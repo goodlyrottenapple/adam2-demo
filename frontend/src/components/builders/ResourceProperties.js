@@ -11,9 +11,8 @@ export default class ResourceProperties extends React.Component {
 	state = {
 		data: this.props.data ? this.props.data : {
 			resourceName:'',
-			resourceReferences:'',
+			resourceDataLevel:resourceDataLevelEnum[0],
 			resourceDescription: '',
-			resourceDataLevel:resourceDataLevelEnum[0]
 		},
 	}
 
@@ -51,26 +50,6 @@ export default class ResourceProperties extends React.Component {
 			  	</GridColumn>
 
 					<GridColumn>
-						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Resource References:</h5>
-						<Textfield
-							name="resourceReferences"
-							defaultValue={this.state.data.resourceReferences}
-							onChange={this.handleChange('resourceReferences')}
-						/>
-			  	</GridColumn>
-
-					<GridColumn medium={12}>
-					<div className="textarea">
-			  	<FieldTextAreaStateless
-						name="resourceDescription"
-						label="Description:"
-						style={{width:'100%'}}
-			      value={this.state.data.resourceDescription}
-			      onChange={this.handleChange('resourceDescription')}
-			    /></div>
-			  	</GridColumn>
-
-					<GridColumn>
 			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data Level:</h5>
 	          <Select
 	            className="single-select"
@@ -87,6 +66,17 @@ export default class ResourceProperties extends React.Component {
 	            onChange={this.handleChange('resourceDataLevel')}
 	          />
 			    </GridColumn>
+
+					<GridColumn medium={12}>
+					<div className="textarea">
+			  	<FieldTextAreaStateless
+						name="resourceDescription"
+						label="Description:"
+						style={{width:'100%'}}
+			      value={this.state.data.resourceDescription}
+			      onChange={this.handleChange('resourceDescription')}
+			    /></div>
+			  	</GridColumn>
 
 				</Grid>
 		  </div>
