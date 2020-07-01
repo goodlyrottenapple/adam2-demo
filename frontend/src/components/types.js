@@ -15,42 +15,50 @@ export const typeMap = {
     'ProfileProperties': {
       type: ProfileProperties,
       label: 'Profile Basics',
-      canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: false,
     },
     'ProfileReferences': {
       type: ProfileReferences,
       label: 'Profile References (add more)',
-      canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: false,
     },
     'ResourceProperties': {
     	type: ResourceProperties,
 			label: 'Resource Properties',
-			canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: false,
 		},
     'ResourceReferences': {
       type: ResourceReferences,
       label: 'Resource References (add more)',
-      canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: true,
     },
     'ResourceContact': {
     	type: ResourceContacts,
 			label: 'Resource Contacts (add more)',
-			canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: true,
     },
     'ResourceOrganisations': {
     	type: ResourceOrganisations,
 			label: 'Resource Organisations (add more)',
-			canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: true,
     },
     'SharingMode': {
     	type: SharingMode,
 			label: 'Sharing Mode',
-			canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: false,
 		},
     'PermissionMode': {
     	type: PermissionMode,
 			label: 'Permission Mode',
-			canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: false,
 		},
 		'Term': {
     	type: Term,
@@ -62,6 +70,7 @@ export const typeMap = {
     'DUOTerms': {
     	type: DUOTerms,
 			label: 'Terms from DUO',
-			canHaveChildren: false
+      canHaveChildren: false,
+      multipleInstances: false,
     }
   }
