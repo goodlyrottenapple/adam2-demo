@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PageTitle from '../components/PageTitle';
 import Textfield from '@atlaskit/textfield';
+import Dropzone from 'react-dropzone';
+import { saveAs } from 'file-saver';
 
 import styled from 'styled-components';
 import Tree, {
@@ -66,7 +68,19 @@ const builders = Object.keys(typeMap).filter(e => 'type' in typeMap[e]).map(e =>
   canHaveChildren:typeMap[e].canHaveChildren,
   childrenType:typeMap[e].childrenType,
   rootNesting:typeMap[e].rootNesting,
- }})
+}})
+
+const readTextFile =(file) => {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onerror = reject;
+    fr.onload = () => {
+      resolve(fr.result)
+    };
+    fr.readAsText(file);
+  });
+}
+
 
 export default class MainPage extends Component<Props, State> {
 
@@ -133,14 +147,11 @@ export default class MainPage extends Component<Props, State> {
   // }
 
   storeData = (id) => {
-    return (data) => {
-      var newTree = {...this.state.tree}
+    return (data) => this.setState(prevState => {
+      var newTree = {...prevState.tree}
       newTree.items[id].data = data
-
-      this.setState({
-        tree: newTree,
-      });
-    }
+      return { tree: newTree }
+    })
   }
 
   renderBuilderFromTreeItem = (item: TreeItem) => {
@@ -267,14 +278,14 @@ export default class MainPage extends Component<Props, State> {
     });
   };
 
-  handleChange = selectedOption => {
-    const { counter, tree } = this.state;
+  handleChange = selectedOption => this.setState((prevState) => {
+    const { counter, tree } = prevState;
     const newTree = this.addItemToRoot(tree, counter, selectedOption.value, selectedOption.canHaveChildren, selectedOption.childrenType, selectedOption.rootNesting);
-    this.setState({
+    return {
       counter: counter+1,
       tree: newTree,
-    });
-  };
+    }
+  })
 
   // saveTree = () => {
   //   fetch(
@@ -363,6 +374,85 @@ export default class MainPage extends Component<Props, State> {
     return collectChildren(tree, tree.items.root.children, true).reduce((acc,c) => mergeObjs(acc,c), {})
   }
 
+  saveADAM = () => {
+    const blob = new Blob([JSON.stringify(this.mkADAM(this.state.tree), null, 2)], {type: "application/json;charset=utf-8"});
+    saveAs(blob, "adam.json");
+  }
+
+  addBuilder = (o, ty) => {
+    const { counter, tree } = this.state;
+    const newTree = this.addItemToRoot(tree, counter, ty, typeMap[ty].canHaveChildren, typeMap[ty].childrenType, typeMap[ty].rootNesting);
+    newTree.items[`${counter}`].data = o
+
+    this.setState({
+      counter: counter+1,
+      tree: newTree,
+    });
+  }
+
+  loadADAMaux = o => {
+    if('profileName' in o){
+      const ty = 'ProfileProperties';
+      this.addBuilder({profileName:o.profileName, profileVersion:o.profileVersion, profileCreateDate:o.profileCreateDate}, ty);
+    }
+    if('profileReferences' in o){
+      const ty = 'ProfileReferences';
+      o.profileReferences.map(r => this.addBuilder({profileReferences: [r]}, ty))
+    }
+    if('resourceName' in o){
+      const ty = 'ResourceProperties';
+      this.addBuilder({resourceName:o.resourceName, resourceDataLevel:o.resourceDataLevel, resourceDescription:o.resourceDescription}, ty);
+    }
+    if('resourceReferences' in o){
+      const ty = 'ResourceReferences';
+      o.resourceReferences.map(r => this.addBuilder({resourceReferences: [r]}, ty))
+    }
+    if('resourceContacts' in o){
+      const ty = 'ResourceContact';
+      o.resourceContacts.map(r => this.addBuilder({resourceContacts: [r]}, ty))
+    }
+    if('resourceOrganisations' in o){
+      const ty = 'ResourceOrganisations';
+      o.resourceOrganisations.map(r => this.addBuilder({resourceOrganisations: [r]}, ty))
+    }
+    if('sharingMode' in o){
+      const ty = 'SharingMode';
+      this.addBuilder({sharingMode:o.sharingMode}, ty);
+    }
+    if('permissionMode' in o){
+      const ty = 'PermissionMode';
+      this.addBuilder({permissionMode:o.permissionMode}, ty);
+    }
+  }
+
+  loadADAM = (acceptedFiles) => acceptedFiles.forEach((file) => {
+    const ext = file.path.split('.').pop().toLowerCase()
+    if(ext === 'json') {
+      readTextFile(file).then((result) => {
+        const res = JSON.parse(result)
+        this.setState({
+          counter:0,
+          tree: {
+            rootId: 'root',
+            items: {
+              'root': {
+                id: 'root',
+                children: [],
+                hasChildren: true,
+                isExpanded: true,
+                isChildrenLoading: false,
+                canHaveChildren: true
+              },
+            },
+          }
+        });
+        this.loadADAMaux(res)
+      
+        
+      })
+    }
+  })
+
   componentWillMount = () => {
     this.loadOntologies()
   }
@@ -370,7 +460,8 @@ export default class MainPage extends Component<Props, State> {
   render() {
     const { tree } = this.state;
     return (
-      <div className="content">
+      <Dropzone onDrop={this.loadADAM}>
+      {({getRootProps}) => (<div className="content" {...getRootProps()}>
         <PageTitle>ADA-M 2.0 demo</PageTitle>
         <div className="cols">
           <div className="col1">
@@ -430,11 +521,7 @@ export default class MainPage extends Component<Props, State> {
               isDragEnabled
               isNestingEnabled
             />
-            {/* <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>ADA-M profile:</h4>
-            <AkCodeBlock
-              language="json"
-              text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
-              showLineNumbers={false}/> */}
+
           </div>
 
           <div className="col3">
@@ -443,9 +530,17 @@ export default class MainPage extends Component<Props, State> {
               language="json"
               text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
               showLineNumbers={false}/>
+              <Button appearance="primary" style={{marginTop:'10px'}} onClick={this.saveADAM}>Download ADA-M profile</Button>
+
+            <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>debug:</h4>
+            <AkCodeBlock
+            language="json"
+            text={JSON.stringify(this.state.tree, null, 2)}
+            showLineNumbers={false}/>
           </div>
         </div>
-      </div>
+      </div>)}
+      </Dropzone>
     );
   }
 }
