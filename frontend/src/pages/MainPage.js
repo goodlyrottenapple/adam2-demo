@@ -532,11 +532,11 @@ export default class MainPage extends Component<Props, State> {
               showLineNumbers={false}/>
               <Button appearance="primary" style={{marginTop:'10px'}} onClick={this.saveADAM}>Download ADA-M profile</Button>
 
-            <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>debug:</h4>
+            {/* <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>debug:</h4>
             <AkCodeBlock
-            language="json"
-            text={JSON.stringify(this.state.tree, null, 2)}
-            showLineNumbers={false}/>
+              language="json"
+              text={JSON.stringify(this.state.tree, null, 2)}
+              showLineNumbers={false}/> */}
           </div>
         </div>
       </div>)}
