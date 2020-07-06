@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from rdflib.namespace import RDFS
+from owlready2 import *
 from os import path
 from os import listdir
 from os.path import isfile, join
@@ -45,12 +46,17 @@ def recAddChildren(g, visited, k, v):
     v_new['children'] = [recAddChildren(g, visited_new, k_child, g[k_child]) for k_child in v['children']]
   return v_new
 
-def firstChildrenWithLabel(g, k):
+def firstChildrenWithLabel(g, k, visited = {}):
   if g[k]['label']: return [k]
   else:
     res = []
+    visited[k] = visited[k] + 1 if k in visited else 1
     for c in g[k]['children']:
-      res = res + firstChildrenWithLabel(g, c)
+      # bit of a nasty workaround ... this is to avoid an infinite loop but at the same time
+      # allow several branches which might potentially have the same child to be explored
+      # the 20 hits limit is arbitrary
+      if c not in visited or visited[c] < 20:
+        res = res + firstChildrenWithLabel(g, c, visited)
 
     return res
 
@@ -97,9 +103,17 @@ async def getOntology(payload:Query):
     with open(h_url) as file:
       return json.loads(file.read())
   else:
-    g = rdflib.Graph()
-    g.load(payload.url)
-    
+    # there are two potential parsers. if the first one from rdflib fails
+    # we try the owlready2 one. not sure whether there is ever a case where
+    # the first one fails and second succeeds tho
+    try:
+      g = rdflib.Graph()
+      g.load(payload.url)
+    except:
+      onto = get_ontology(payload.url)
+      onto.load()
+      g = default_world.as_rdflib_graph()
+
     if payload.collapseTree:
       res = {}
       for s, _, o in g.triples((None, RDFS.subClassOf, None)):
