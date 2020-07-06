@@ -3,8 +3,9 @@ import PageTitle from '../components/PageTitle';
 import Textfield from '@atlaskit/textfield';
 import Dropzone from 'react-dropzone';
 import { saveAs } from 'file-saver';
+import * as localForage from "localforage";
 
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import Tree, {
   mutateTree,
   moveItemOnTree,
@@ -312,19 +313,28 @@ export default class MainPage extends Component<Props, State> {
   //       })
   // }
 
+
   loadOntologies = () => {
-    const adam2demoOntologies = localStorage.getItem('adam2demoOntologies')
-    if(adam2demoOntologies){
-      this.setState({ontologies: JSON.parse(adam2demoOntologies)})
-    }
-    const adam2demoDataUseClassOntology = localStorage.getItem('adam2demoDataUseClassOntology')
-    if(adam2demoDataUseClassOntology){
-      this.setState({dataUseClassOntology: adam2demoDataUseClassOntology})
-    }
-    const adam2demoRestrictionObjectOntology = localStorage.getItem('adam2demoRestrictionObjectOntology')
-    if(adam2demoRestrictionObjectOntology){
-      this.setState({restrictionObjectOntology: adam2demoRestrictionObjectOntology})
-    }
+    const onts = {}
+
+    localForage.iterate((value, key) => {
+      onts[key] = value;
+    }).then(_ => {
+      this.setState({ontologies: onts})
+
+    // const adam2demoOntologies = localStorage.getItem('adam2demoOntologies')
+    // if(adam2demoOntologies){
+    //   this.setState({ontologies: JSON.parse(adam2demoOntologies)})
+    // }
+      const adam2demoDataUseClassOntology = localStorage.getItem('adam2demoDataUseClassOntology')
+      if(adam2demoDataUseClassOntology){
+        this.setState({dataUseClassOntology: adam2demoDataUseClassOntology})
+      }
+      const adam2demoRestrictionObjectOntology = localStorage.getItem('adam2demoRestrictionObjectOntology')
+      if(adam2demoRestrictionObjectOntology){
+        this.setState({restrictionObjectOntology: adam2demoRestrictionObjectOntology})
+      }
+    })
 
 
     // fetch(
@@ -364,9 +374,8 @@ export default class MainPage extends Component<Props, State> {
     )
     .then(res => res.json())
     .then(res => {
-      const adam2demoOntologies = {...this.state.ontologies, [this.state.ontoURL]: res};
-      this.setState({ontologies: adam2demoOntologies});
-      localStorage.setItem('adam2demoOntologies', JSON.stringify(adam2demoOntologies))
+      this.setState({ontologies: {...this.state.ontologies, [this.state.ontoURL]: res}});
+      localForage.setItem(this.state.ontoURL, res)
     });
   }
 
@@ -454,6 +463,13 @@ export default class MainPage extends Component<Props, State> {
   })
 
   componentWillMount = () => {
+    localForage.config({
+      name        : 'adam2-demo',
+      version     : 1.0,
+      storeName   : 'ontologies', // Should be alphanumeric, with underscores.
+      description : 'Offline store of previously loaded ontologies'
+    });
+    
     this.loadOntologies()
   }
 
