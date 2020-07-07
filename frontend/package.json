@@ -39,6 +39,7 @@
     "antd": "^4.0.3",
     "file-saver": "^2.0.2",
     "fuse.js": "^6.4.0",
+    "localforage": "^1.7.4",
     "lodash": "^4.17.15",
     "prop-types": "^15.6.0",
     "react": "^16.8.2",
