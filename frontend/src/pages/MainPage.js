@@ -17,6 +17,7 @@ import Tree, {
   TreeSourcePosition,
   TreeDestinationPosition,
 } from '@atlaskit/tree';
+import ToggleStateless from '@atlaskit/toggle';
 import Button, { ButtonGroup } from '@atlaskit/button';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Select from '@atlaskit/select';
@@ -52,6 +53,25 @@ const mergeObjs = (a,b) => {
       }
     default:
       return a
+  }
+}
+
+
+const removeNulls = (o) => {
+  switch(typeof o){
+    case "object":
+      if(Array.isArray(o)){
+        return o.map(x => removeNulls(x))
+      } else {
+        const ret = {...o}
+        for (var key in ret) { 
+          if(ret[key] === null) delete ret[key]
+          else ret[key] = removeNulls(ret[key])
+        }
+        return ret
+      }
+    default:
+      return o
   }
 }
 
@@ -91,6 +111,7 @@ export default class MainPage extends Component<Props, State> {
     dataUseClassOntology: null,
     restrictionObjectOntology: null,
     ontoURL:'',
+    advancedMode:false,
     tree: {
       rootId: 'root',
       items: {
@@ -162,10 +183,11 @@ export default class MainPage extends Component<Props, State> {
       data={item.data}
       label={typeMap[item.type].label}
       settings_id={this.props.match.params.id}
-      {...(item.type === "Term" ? {
-        dataUseClassOntology: this.state.dataUseClassOntology ? this.state.ontologies[this.state.dataUseClassOntology] : [],
-        restrictionObjectOntology: this.state.restrictionObjectOntology ? this.state.ontologies[this.state.restrictionObjectOntology] : []
-      } : {})}
+      advancedMode={this.state.advancedMode}
+      // {...(item.type === "Term" ? {
+      //   dataUseClassOntology: this.state.dataUseClassOntology ? this.state.ontologies[this.state.dataUseClassOntology] : [],
+      //   restrictionObjectOntology: this.state.restrictionObjectOntology ? this.state.ontologies[this.state.restrictionObjectOntology] : []
+      // } : {})}
     />
   }
 
@@ -314,73 +336,73 @@ export default class MainPage extends Component<Props, State> {
   // }
 
 
-  loadOntologies = () => {
-    const onts = {}
+  // loadOntologies = () => {
+  //   const onts = {}
 
-    localForage.iterate((value, key) => {
-      onts[key] = value;
-    }).then(_ => {
-      this.setState({ontologies: onts})
+  //   localForage.iterate((value, key) => {
+  //     onts[key] = value;
+  //   }).then(_ => {
+  //     this.setState({ontologies: onts})
 
-    // const adam2demoOntologies = localStorage.getItem('adam2demoOntologies')
-    // if(adam2demoOntologies){
-    //   this.setState({ontologies: JSON.parse(adam2demoOntologies)})
-    // }
-      const adam2demoDataUseClassOntology = localStorage.getItem('adam2demoDataUseClassOntology')
-      if(adam2demoDataUseClassOntology){
-        this.setState({dataUseClassOntology: adam2demoDataUseClassOntology})
-      }
-      const adam2demoRestrictionObjectOntology = localStorage.getItem('adam2demoRestrictionObjectOntology')
-      if(adam2demoRestrictionObjectOntology){
-        this.setState({restrictionObjectOntology: adam2demoRestrictionObjectOntology})
-      }
-    })
+  //   // const adam2demoOntologies = localStorage.getItem('adam2demoOntologies')
+  //   // if(adam2demoOntologies){
+  //   //   this.setState({ontologies: JSON.parse(adam2demoOntologies)})
+  //   // }
+  //     const adam2demoDataUseClassOntology = localStorage.getItem('adam2demoDataUseClassOntology')
+  //     if(adam2demoDataUseClassOntology){
+  //       this.setState({dataUseClassOntology: adam2demoDataUseClassOntology})
+  //     }
+  //     const adam2demoRestrictionObjectOntology = localStorage.getItem('adam2demoRestrictionObjectOntology')
+  //     if(adam2demoRestrictionObjectOntology){
+  //       this.setState({restrictionObjectOntology: adam2demoRestrictionObjectOntology})
+  //     }
+  //   })
 
 
-    // fetch(
-    //   process.env.REACT_APP_API_URL+"/loadOntologies",
-    //   {
-    //     method:'POST',
-    //     headers: {
-    //       "Access-Control-Allow-Origin": "*",
-    //       'Content-Type': 'application/json',
-    //       'Accept': 'application/json',
-    //       'X-Requested-With': 'XMLHttpRequest'
-    //     }
-    //   }
-    // )
-    // .then(res => res.json())
-    // .then(res => {
-    //   // Load each ontology from disk into the dropdown
-    //   for (var i = 0; i < res.length; i++) {
-    //     this.setState({ontologies: {...this.state.ontologies, [res[i]['name']]: res[i]['content']}})
-    //   }
-    // });
-  }
+  //   // fetch(
+  //   //   process.env.REACT_APP_API_URL+"/loadOntologies",
+  //   //   {
+  //   //     method:'POST',
+  //   //     headers: {
+  //   //       "Access-Control-Allow-Origin": "*",
+  //   //       'Content-Type': 'application/json',
+  //   //       'Accept': 'application/json',
+  //   //       'X-Requested-With': 'XMLHttpRequest'
+  //   //     }
+  //   //   }
+  //   // )
+  //   // .then(res => res.json())
+  //   // .then(res => {
+  //   //   // Load each ontology from disk into the dropdown
+  //   //   for (var i = 0; i < res.length; i++) {
+  //   //     this.setState({ontologies: {...this.state.ontologies, [res[i]['name']]: res[i]['content']}})
+  //   //   }
+  //   // });
+  // }
 
-  addOntology = () => {
-    fetch(
-      process.env.REACT_APP_API_URL+"/getOntology",
-      {
-        method:'POST',
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify({'url': this.state.ontoURL})
-      }
-    )
-    .then(res => res.json())
-    .then(res => {
-      this.setState({ontologies: {...this.state.ontologies, [this.state.ontoURL]: res}});
-      localForage.setItem(this.state.ontoURL, res)
-    });
-  }
+  // addOntology = () => {
+  //   fetch(
+  //     process.env.REACT_APP_API_URL+"/getOntology",
+  //     {
+  //       method:'POST',
+  //       headers: {
+  //         "Access-Control-Allow-Origin": "*",
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'X-Requested-With': 'XMLHttpRequest'
+  //       },
+  //       body: JSON.stringify({'url': this.state.ontoURL})
+  //     }
+  //   )
+  //   .then(res => res.json())
+  //   .then(res => {
+  //     this.setState({ontologies: {...this.state.ontologies, [this.state.ontoURL]: res}});
+  //     localForage.setItem(this.state.ontoURL, res)
+  //   });
+  // }
 
   mkADAM(tree){
-    return collectChildren(tree, tree.items.root.children, true).reduce((acc,c) => mergeObjs(acc,c), {})
+    return removeNulls(collectChildren(tree, tree.items.root.children, true).reduce((acc,c) => mergeObjs(acc,c), {}))
   }
 
   saveADAM = () => {
@@ -469,8 +491,6 @@ export default class MainPage extends Component<Props, State> {
       storeName   : 'ontologies', // Should be alphanumeric, with underscores.
       description : 'Offline store of previously loaded ontologies'
     });
-    
-    this.loadOntologies()
   }
 
   render() {
@@ -493,6 +513,12 @@ export default class MainPage extends Component<Props, State> {
                     .map(k => this.state.tree.items[k].type ? this.state.tree.items[k].type : "")
                     .includes(option.value)}
                 placeholder="Select a property to add" />
+            </div>
+            
+
+            <div style={{marginTop:'23px', display:'flex'}}>
+              <ToggleStateless isDefaultChecked={this.state.advancedMode} onChange={() => this.setState({advancedMode: !this.state.advancedMode})}/>
+              <span style={{paddingTop:'4px'}}>Advanced mode</span>
             </div>
 
             <h4 style={{marginTop:'23px'}}>Current ontology Sources:</h4>

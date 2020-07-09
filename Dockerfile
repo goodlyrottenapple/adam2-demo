@@ -34,8 +34,9 @@ RUN mkdir /var/sockets
 
 COPY ./start.sh /app
 
-
 RUN chmod +x /app/start.sh
+
+RUN mkdir /app/ontologies
 
 ENTRYPOINT ["/app/start.sh"]
 

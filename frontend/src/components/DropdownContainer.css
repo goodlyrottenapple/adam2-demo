@@ -61,3 +61,7 @@
 .react-dropdown-tree-select > div > a > ul > li {
   width: calc(100% - 34px);
 }
+
+.react-dropdown-tree-select > div > a > ul > li > input {
+  width: 100%;
+}

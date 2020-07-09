@@ -1,55 +1,45 @@
+import * as localForage from "localforage";
 
-export const getAttributes = (id, callback, callback_err) => fetch(
-  process.env.REACT_APP_API_URL+"/discover/getAttributes/"+id, {
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  }
-  })
+export const getOntology = (url) => localForage.getItem(url).then(res => {
+  if(res) return res;
+  else return fetch(
+    process.env.REACT_APP_API_URL+"/getOntology",
+    {
+      method:'POST',
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({'url': url})
+    }
+  )
   .then(res => res.json())
-  .then(callback, callback_err);
+  .then(res => {
+    localForage.setItem(url, res)
+    return res
+  });
+});
 
-export const getAttributeValues = (id, attribute, callback, callback_err) => fetch(
-  process.env.REACT_APP_API_URL+"/discover/getAttributeValues/"+id, {
-    method:'POST',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest'
-    },
-    body: JSON.stringify({'attribute': attribute})
-  })
+
+export const getAvailableOntologies = () => localForage.getItem('adam2-demo-ontologies').then(res => {
+  if(res) return res;
+  else return fetch(
+    process.env.REACT_APP_API_URL+"/getAvailableOntologies",
+    {
+      method:'GET',
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    }
+  )
   .then(res => res.json())
-  .then(callback, callback_err);
-
-
-
-export const getAttributeValuesLimitOffset = (id, attribute, limit, offset, callback, callback_err) => fetch(
-  process.env.REACT_APP_API_URL+"/discover/getAttributeValuesLimit/"+id, {
-    method:'POST',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest'
-    },
-    body: JSON.stringify({'attribute': attribute, 'limit': limit})
-  })
-  .then(res => res.json())
-  .then(callback, callback_err);
-
-
-export const getUserIsAdminOf = (id, callback, callback_err) => fetch(
-  process.env.REACT_APP_API_URL+"/discover/userIsAdminOf/"+id, {
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  }
-  })
-  .then(res => res.json())
-  .then(callback, callback_err);
+  .then(res => {
+    localForage.setItem("adam2-demo-ontologies", res)
+    return res
+  });
+});

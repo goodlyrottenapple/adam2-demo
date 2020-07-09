@@ -10,6 +10,9 @@ from os import listdir
 from os.path import isfile, join
 import re
 import unidecode
+import urllib.request
+import asyncio
+from hashlib import sha1
 
 def slugify(text):
     text = unidecode.unidecode(text).lower()
@@ -19,6 +22,10 @@ class Query(BaseModel):
   url: str
   collapseTree: Optional[bool]
 
+
+class OntologyTooLargeError(Exception):
+    """Raised when the ontology size exceeds 30mb"""
+    pass
 
 app = FastAPI(docs_url="/docs", redoc_url="/redoc")
 
@@ -69,40 +76,69 @@ def subClassOfTrans(g, a, b):
   return False
 
 
-@app.post("/loadOntologies")
-async def loadOntologies():
-    '''
-    Fetch local .json ontology files from disk to preload dropdown options
-    '''
-    file_names = [f for f in listdir('.') if isfile(join('.', f))]
-    res = []
-    for file_name in file_names:
-        if '.json' in file_name:
-            with open(file_name) as file:
-                res.append({
-                    'name': file_name,
-                    'content': json.loads(file.read())
-                })
-    return res
 
-@app.post("/getOntology")
-async def getOntology(payload:Query):
+@app.get("/getAvailableOntologies")
+async def getAvailableOntologies():
+  with open("ebi_ontologies.json") as file:
+    return json.loads(file.read())
+
+
+@app.get("/cacheAvailableOntologies")
+async def cacheAvailableOntologies():
+  with open("ebi_ontologies.json", "r+") as file:
+    ebi_ontologies = json.loads(file.read())
+
+    for o in ebi_ontologies:
+      try:
+        checksum, _ = await getOntologyInternal(Query(url = o['url']+"/download"), o['checksum'] if 'checksum' in o else None)
+        print(o['abbrev']+ " ok")
+        o['status'] = "ok"
+        if checksum is not None: o['checksum'] = checksum
+      except OntologyTooLargeError:
+        print(o['abbrev']+ " too large")
+        o['status'] = "too large"
+      except Exception as e:
+        print(o['abbrev']+ " faled with: ", e)
+        o['status'] = "parsing error"
+    
+    file.seek(0)
+    file.write(json.dumps(ebi_ontologies, indent = 2))
+    file.truncate()  
+
+
+async def getOntologyInternal(payload:Query, checksumCurrent = None):
   '''
   Fetch new ontology
   '''
-  # m = hashlib.md5()
-  # m.update(payload.url.encode('utf-8'))
-  # h_url = "cache/" + str(m.hexdigest())+".json"
-  # h_url = str(m.hexdigest())+".json"
-  if payload.collapseTree:
-    h_url = slugify(payload.url)+'-collapsed.json'
-  else:
-    h_url = slugify(payload.url)+'.json'
 
-  if path.exists(h_url):
-    with open(h_url) as file:
-      return json.loads(file.read())
+  if payload.collapseTree:
+    cached_path = "ontologies/"+slugify(payload.url)+'-collapsed.json'
   else:
+    cached_path = "ontologies/"+slugify(payload.url)+'.json'
+
+  if path.exists(cached_path) and checksumCurrent is None:
+    with open(cached_path) as file:
+      return None, json.loads(file.read())
+  else:
+    checksumNew = ""
+    with urllib.request.urlopen(payload.url) as url:
+      meta = url.info()
+      if int(meta["Content-length"]) > 31457280:
+        raise OntologyTooLargeError
+
+      print("calculate checksum...")
+      checksum = hashlib.sha1()
+      downloaded = url.read()
+      checksum.update(downloaded)
+      checksumNew = checksum.hexdigest()
+      # if path.exists(cached_path):
+      if checksumCurrent is not None and path.exists(cached_path) and checksumCurrent == checksumNew :
+        with open(cached_path) as file:
+          return None, json.loads(file.read())
+      if checksumCurrent is not None and checksumCurrent != checksumNew :
+        print("ontology changed, re-parsing...")
+
+
     # there are two potential parsers. if the first one from rdflib fails
     # we try the owlready2 one. not sure whether there is ever a case where
     # the first one fails and second succeeds tho
@@ -168,18 +204,28 @@ async def getOntology(payload:Query):
         if o_str not in subcls_inv:
           subcls_inv[o_str] = set()
 
-
       allTopLevelWithLabels = [x for (k,v) in subcls.items() for x in firstChildrenWithLabel(subcls, k) if k not in notTopLevel]
       allTopLevelWithLabelsFiltered = []
+
       for x in allTopLevelWithLabels:
         notSubClassOfAny = True
         for y in allTopLevelWithLabels:
-          if subClassOfTrans(subcls_inv, x, y): notSubClassOfAny = False
+          if subClassOfTrans(subcls_inv, x, y): 
+            notSubClassOfAny = False
+            break
         if notSubClassOfAny: allTopLevelWithLabelsFiltered.append(x)
-      # print([subcls[x]['label'] for x in allTopLevelWithLabelsFiltered])
+
       res = [recAddChildren(subcls, set(), k, subcls[k]) for k in allTopLevelWithLabelsFiltered]
 
-      with open(h_url, 'w') as outfile:
+      with open(cached_path, 'w') as outfile:
         json.dump(res, outfile)
 
-      return res
+      return checksumNew, res
+
+@app.post("/getOntology")
+async def getOntology(payload:Query):
+  '''
+  Fetch new ontology
+  '''
+  _, res = await getOntologyInternal(payload)
+  return res
