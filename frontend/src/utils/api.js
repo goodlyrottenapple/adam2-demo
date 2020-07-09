@@ -1,6 +1,6 @@
 import * as localForage from "localforage";
 
-export const getOntology = (url) => localForage.getItem(url).then(res => {
+export const getOntology = (url, collapseTree = false) => localForage.getItem(url + (collapseTree ? "-collapsed" : "")).then(res => {
   if(res) return res;
   else return fetch(
     process.env.REACT_APP_API_URL+"/getOntology",
@@ -12,12 +12,12 @@ export const getOntology = (url) => localForage.getItem(url).then(res => {
         'Accept': 'application/json',
         'X-Requested-With': 'XMLHttpRequest'
       },
-      body: JSON.stringify({'url': url})
+      body: JSON.stringify({'url': url, collapseTree:collapseTree})
     }
   )
   .then(res => res.json())
   .then(res => {
-    localForage.setItem(url, res)
+    localForage.setItem(url + (collapseTree ? "-collapsed" : ""), res)
     return res
   });
 });

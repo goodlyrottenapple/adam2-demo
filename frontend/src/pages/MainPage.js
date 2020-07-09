@@ -310,96 +310,6 @@ export default class MainPage extends Component<Props, State> {
     }
   })
 
-  // saveTree = () => {
-  //   fetch(
-  //     process.env.REACT_APP_API_URL+"/discovery/saveSettings", {
-  //       method:'POST',
-  //       headers: {
-  //         'Access-Control-Allow-Origin': '*',
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'X-Requested-With': 'XMLHttpRequest'
-  //       },
-  //       body: JSON.stringify({id: this.props.match.params.id, data:this.state.tree})
-  //     })
-  //     .then(res => res.json())
-  //     .then(
-  //       (result) => {
-  //         console.log(result);
-  //       },
-  //       // Note: it's important to handle errors here
-  //       // instead of a catch() block so that we don't swallow
-  //       // exceptions from actual bugs in components.
-  //       (error) => {
-  //         console.log(error);
-  //       })
-  // }
-
-
-  // loadOntologies = () => {
-  //   const onts = {}
-
-  //   localForage.iterate((value, key) => {
-  //     onts[key] = value;
-  //   }).then(_ => {
-  //     this.setState({ontologies: onts})
-
-  //   // const adam2demoOntologies = localStorage.getItem('adam2demoOntologies')
-  //   // if(adam2demoOntologies){
-  //   //   this.setState({ontologies: JSON.parse(adam2demoOntologies)})
-  //   // }
-  //     const adam2demoDataUseClassOntology = localStorage.getItem('adam2demoDataUseClassOntology')
-  //     if(adam2demoDataUseClassOntology){
-  //       this.setState({dataUseClassOntology: adam2demoDataUseClassOntology})
-  //     }
-  //     const adam2demoRestrictionObjectOntology = localStorage.getItem('adam2demoRestrictionObjectOntology')
-  //     if(adam2demoRestrictionObjectOntology){
-  //       this.setState({restrictionObjectOntology: adam2demoRestrictionObjectOntology})
-  //     }
-  //   })
-
-
-  //   // fetch(
-  //   //   process.env.REACT_APP_API_URL+"/loadOntologies",
-  //   //   {
-  //   //     method:'POST',
-  //   //     headers: {
-  //   //       "Access-Control-Allow-Origin": "*",
-  //   //       'Content-Type': 'application/json',
-  //   //       'Accept': 'application/json',
-  //   //       'X-Requested-With': 'XMLHttpRequest'
-  //   //     }
-  //   //   }
-  //   // )
-  //   // .then(res => res.json())
-  //   // .then(res => {
-  //   //   // Load each ontology from disk into the dropdown
-  //   //   for (var i = 0; i < res.length; i++) {
-  //   //     this.setState({ontologies: {...this.state.ontologies, [res[i]['name']]: res[i]['content']}})
-  //   //   }
-  //   // });
-  // }
-
-  // addOntology = () => {
-  //   fetch(
-  //     process.env.REACT_APP_API_URL+"/getOntology",
-  //     {
-  //       method:'POST',
-  //       headers: {
-  //         "Access-Control-Allow-Origin": "*",
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'X-Requested-With': 'XMLHttpRequest'
-  //       },
-  //       body: JSON.stringify({'url': this.state.ontoURL})
-  //     }
-  //   )
-  //   .then(res => res.json())
-  //   .then(res => {
-  //     this.setState({ontologies: {...this.state.ontologies, [this.state.ontoURL]: res}});
-  //     localForage.setItem(this.state.ontoURL, res)
-  //   });
-  // }
 
   mkADAM(tree){
     return removeNulls(collectChildren(tree, tree.items.root.children, true).reduce((acc,c) => mergeObjs(acc,c), {}))
@@ -512,7 +422,7 @@ export default class MainPage extends Component<Props, State> {
                   Object.keys(this.state.tree.items)
                     .map(k => this.state.tree.items[k].type ? this.state.tree.items[k].type : "")
                     .includes(option.value)}
-                placeholder="Select a property to add" />
+                placeholder="Select a property to add the the ADA-M profile..." />
             </div>
             
 
@@ -521,37 +431,6 @@ export default class MainPage extends Component<Props, State> {
               <span style={{paddingTop:'4px'}}>Advanced mode</span>
             </div>
 
-            <h4 style={{marginTop:'23px'}}>Current ontology Sources:</h4>
-
-            <ul style={{paddingLeft:'20px', paddingBottom:'10px'}}>{Object.keys(this.state.ontologies).map(k => (<li>{k}</li>))}</ul>
-            <div style={{marginTop:'0px'}}>
-              <Textfield
-                name="ontoURL"
-                defaultValue={this.state.ontoURL}
-                onChange={e => this.setState({ontoURL: e.target.value})}
-              />
-              <Button appearance="primary" style={{marginTop:'10px'}} onClick={this.addOntology}>Add Ontology</Button>
-            </div>
-            <div style={{marginTop:'23px'}}>
-              <h4 style={{paddingBottom:'10px'}}>Active data use class ontology:</h4>
-              <Select
-                options={Object.keys(this.state.ontologies).map(k => ({label: k, value: k}))}
-                onChange={e => {
-                  this.setState({dataUseClassOntology: e.value});
-                  localStorage.setItem('adam2demoDataUseClassOntology', e.value)
-                }}
-                defaultValue={this.state.dataUseClassOntology ? {label:this.state.dataUseClassOntology, value:this.state.dataUseClassOntology} : null}
-                placeholder="Select active data use class ontology" />
-              <h4 style={{paddingBottom:'10px'}}>Active restriction object ontology:</h4>
-              <Select
-                options={Object.keys(this.state.ontologies).map(k => ({label: k, value: k}))}
-                onChange={e => {
-                  this.setState({restrictionObjectOntology: e.value})
-                  localStorage.setItem('adam2demoRestrictionObjectOntology', e.value)
-                }}
-                defaultValue={this.state.restrictionObjectOntology ? {label:this.state.restrictionObjectOntology, value:this.state.restrictionObjectOntology} : null}
-                placeholder="Select active restriction object ontology" />
-            </div>
           </div>
 
           <div className="col2">
