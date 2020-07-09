@@ -166,7 +166,7 @@ async def getOntologyInternal(payload:Query, checksumCurrent = None):
           if len(r) > 0:
             _,l = r[0]
             res[o_str] = l
-      return res
+      return None,res
 
     else:
       subcls = {}
