@@ -26,7 +26,7 @@ export default class Term extends React.Component {
 	componentWillMount() {
 		getAvailableOntologies().then(availableOntologies => getOntology("https://www.ebi.ac.uk/ols/ontologies/duo/download").then(duo =>
 			this.setState({
-				availableOntologies: availableOntologies.map(o => ({label: o.abbrev + " - " + o.label, value: o.url + "/download"})),
+				availableOntologies: availableOntologies.filter(o => o.status === "ok").map(o => ({label: o.abbrev + " - " + o.label, value: o.url + "/download"})),
 				dataUseClassOntology: duo
 			})
 		))
