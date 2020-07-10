@@ -24,12 +24,17 @@ export default class Term extends React.Component {
 	}
 
 	componentWillMount() {
-		getAvailableOntologies().then(availableOntologies => getOntology("https://www.ebi.ac.uk/ols/ontologies/duo/download").then(duo =>
-			this.setState({
-				availableOntologies: availableOntologies.filter(o => o.status === "ok").map(o => ({label: o.abbrev + " - " + o.label, value: o.url + "/download"})),
-				dataUseClassOntology: duo
-			})
-		))
+		getAvailableOntologies().then(availableOntologies => getOntology("https://www.ebi.ac.uk/ols/ontologies/duo/download").then(({status , json}) => {
+			switch (status) {
+				case 200:
+					this.setState({
+						availableOntologies: availableOntologies
+							.filter(o => o.status === "ok")
+							.map(o => ({label: o.abbrev + " - " + o.label, value: o.url + "/download", abbrev:o.abbrev})),
+						dataUseClassOntology: json
+					})
+			}
+		}))
 	}
 
   componentDidMount() {
@@ -51,6 +56,8 @@ export default class Term extends React.Component {
 		this.setState({data: newData});
 		this.props.setData(newData);
 	}
+
+
 
 
 
@@ -78,9 +85,25 @@ export default class Term extends React.Component {
 									}}
 							options={this.state.availableOntologies}
 							defaultValue={{label:"DUO - The Data Use Ontology", value:"https://www.ebi.ac.uk/ols/ontologies/duo/download"}}
-							onChange={e => getOntology(e.value).then(res => 
-								this.setState({data: {...this.state.data, dataUseClassOntology : e.value}, dataUseClassOntology: res})
-							)}
+							onChange={e => {
+								this.props.addFlag(`Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`, "", "info")
+								getOntology(e.value)
+									.then(({ status, json }) => {
+										switch (status) {
+											case 200:
+												this.props.addFlag(`${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`, "", "success")
+
+												this.setState({
+													data: {...this.state.data, dataUseClassOntology : e.value}, 
+													dataUseClassOntology: json
+												})
+												break;
+											default:
+												this.props.addFlag(`${e.abbrev ? e.abbrev : e.value} ontology failed...`, json.detail, "error", false)
+
+										}
+									});
+							}}
 						/>
 						</div>
 					</div> 
@@ -135,10 +158,25 @@ export default class Term extends React.Component {
 									}}
 							options={this.state.availableOntologies}
 							// defaultValue={{label:this.state.data.restrictionClass.restrictionRule, value:this.state.data.restrictionClass.restrictionRule}}
-							onChange={e => getOntology(e.value).then(res => this.setState({
-								data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value}}, 
-								restrictionObjectOntology: res
-							}))}
+							onChange={e => {
+								this.props.addFlag(`Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`, "", "info")
+								getOntology(e.value)
+									.then(({ status, json }) => {
+										switch (status) {
+											case 200:
+												this.props.addFlag(`${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`, "", "success")
+										
+												this.setState({
+													data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value}}, 
+													restrictionObjectOntology: json
+												})
+												break;
+											default:
+												this.props.addFlag(`${e.abbrev ? e.abbrev : e.value} ontology failed...`, json.detail, "error", false)
+
+										}
+									});
+							}}
 						/>
 						</div>
 					</div>

@@ -36,8 +36,8 @@ export default class DUOTerms extends React.Component {
       ]
     };
 
-    getOntology("https://www.ebi.ac.uk/ols/ontologies/duo/download", true).then(duoTerms => {
-      const fuse = new Fuse(Object.keys(duoTerms).map(k => ({label: k, value:duoTerms[k]})), options);
+    getOntology("https://www.ebi.ac.uk/ols/ontologies/duo/download", true).then(({json}) => {
+      const fuse = new Fuse(Object.keys(json).map(k => ({label: k, value:json[k]})), options);
       this.setState({fuse: fuse});
     })
 

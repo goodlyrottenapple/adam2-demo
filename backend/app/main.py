@@ -1,5 +1,5 @@
 import rdflib, json, hashlib
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
@@ -227,5 +227,9 @@ async def getOntology(payload:Query):
   '''
   Fetch new ontology
   '''
-  _, res = await getOntologyInternal(payload)
-  return res
+
+  try:
+    _, res = await getOntologyInternal(payload)
+    return res
+  except Exception as e:
+    raise HTTPException(status_code=424, detail=str(e))
