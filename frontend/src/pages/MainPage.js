@@ -23,11 +23,6 @@ import { Grid, GridColumn } from '@atlaskit/page';
 import Select from '@atlaskit/select';
 import CrossIcon from '@atlaskit/icon/glyph/cross';
 import { AkCodeBlock } from '@atlaskit/code';
-import { AutoDismissFlag, FlagGroup } from '@atlaskit/flag';
-import Tick from '@atlaskit/icon/glyph/check-circle';
-import Info from '@atlaskit/icon/glyph/info';
-import Error from '@atlaskit/icon/glyph/error';
-import { colors } from '@atlaskit/theme';
 
 import { typeMap } from '../components/types'
 
@@ -105,21 +100,6 @@ const readTextFile =(file) => {
     fr.readAsText(file);
   });
 }
-
-
-const iconMap = (key) => {
-  const icons = {
-    info: <Info label="Info icon" primaryColor={colors.B300} />,
-    success: <Tick label="Success icon" primaryColor={colors.G300} />,
-    // warning: (
-      // <Warning label="Warning icon" primaryColor={color || colors.Y300} />
-    // ),
-    error: <Error label="Error icon" primaryColor={colors.R300} />,
-  };
-
-  return icons[key];
-};
-
 
 export default class MainPage extends Component<Props, State> {
 
@@ -205,7 +185,6 @@ export default class MainPage extends Component<Props, State> {
       label={typeMap[item.type].label}
       settings_id={this.props.match.params.id}
       advancedMode={this.state.advancedMode}
-      addFlag={this.addFlag}
       // {...(item.type === "Term" ? {
       //   dataUseClassOntology: this.state.dataUseClassOntology ? this.state.ontologies[this.state.dataUseClassOntology] : [],
       //   restrictionObjectOntology: this.state.restrictionObjectOntology ? this.state.ontologies[this.state.restrictionObjectOntology] : []
@@ -426,36 +405,6 @@ export default class MainPage extends Component<Props, State> {
   }
 
 
-  addFlag = (title, message, icon = 'success', override = true) => this.setState(prevState => {
-    if(override) {
-      this.flagCount = 0;
-      return {flags: [{
-        created: Date.now(),
-        description: message,
-        icon: iconMap(icon),
-        id: 1,
-        key: 1,
-        title: title,
-      }]}
-    }
-    const flags = prevState.flags.slice();
-    const index = this.flagCount++;
-    flags.unshift({
-      created: Date.now(),
-      description: message,
-      icon: iconMap(icon),
-      id: index,
-      key: index,
-      title: title,
-    });
-    return { flags: flags }
-  });
-
-  dismissFlag = () => {
-    this.setState(state => ({ flags: state.flags.slice(1) }));
-    this.flagCount--;
-  };
-
   render() {
     const { tree } = this.state;
     return (
@@ -513,11 +462,6 @@ export default class MainPage extends Component<Props, State> {
               showLineNumbers={false}/> */}
           </div>
         </div>
-        <FlagGroup onDismissed={this.dismissFlag}>
-          {this.state.flags.map(flag => (
-            <AutoDismissFlag {...flag} />
-          ))}
-        </FlagGroup>
       </div>)}
       </Dropzone>
     );

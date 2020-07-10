@@ -4,6 +4,9 @@ import { Grid, GridColumn } from '@atlaskit/page';
 import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
 import EditorSettingsIcon from '@atlaskit/icon/glyph/editor/settings';
 import Button from '@atlaskit/button';
+import { notification } from 'antd';
+import '../../antd.css';
+// import 'antd/dist/antd.css';
 
 import DropdownContainer from '../DropdownContainer';
 import { getOntology , getAvailableOntologies } from '../../utils/api'
@@ -29,7 +32,7 @@ export default class Term extends React.Component {
 				case 200:
 					this.setState({
 						availableOntologies: availableOntologies
-							.filter(o => o.status === "ok")
+							// .filter(o => o.status === "ok")
 							.map(o => ({label: o.abbrev + " - " + o.label, value: o.url + "/download", abbrev:o.abbrev})),
 						dataUseClassOntology: json
 					})
@@ -86,20 +89,27 @@ export default class Term extends React.Component {
 							options={this.state.availableOntologies}
 							defaultValue={{label:"DUO - The Data Use Ontology", value:"https://www.ebi.ac.uk/ols/ontologies/duo/download"}}
 							onChange={e => {
-								this.props.addFlag(`Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`, "", "info")
+								notification.info({
+									message: `Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`,
+								});
+
 								getOntology(e.value)
 									.then(({ status, json }) => {
 										switch (status) {
 											case 200:
-												this.props.addFlag(`${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`, "", "success")
-
+												notification.success({
+													message: `${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`,
+												});
 												this.setState({
 													data: {...this.state.data, dataUseClassOntology : e.value}, 
 													dataUseClassOntology: json
 												})
 												break;
 											default:
-												this.props.addFlag(`${e.abbrev ? e.abbrev : e.value} ontology failed...`, json.detail, "error", false)
+												notification.error({
+													message: `Loading the ${e.abbrev ? e.abbrev : e.value} ontology failed with the following error:`,
+													description: json.detail,
+												});
 
 										}
 									});
@@ -157,26 +167,34 @@ export default class Term extends React.Component {
 										}),
 									}}
 							options={this.state.availableOntologies}
-							// defaultValue={{label:this.state.data.restrictionClass.restrictionRule, value:this.state.data.restrictionClass.restrictionRule}}
+
 							onChange={e => {
-								this.props.addFlag(`Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`, "", "info")
+								notification.info({
+									message: `Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`,
+								});
+
 								getOntology(e.value)
 									.then(({ status, json }) => {
 										switch (status) {
 											case 200:
-												this.props.addFlag(`${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`, "", "success")
-										
+												notification.success({
+													message: `${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`,
+												});
 												this.setState({
 													data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value}}, 
 													restrictionObjectOntology: json
 												})
 												break;
 											default:
-												this.props.addFlag(`${e.abbrev ? e.abbrev : e.value} ontology failed...`, json.detail, "error", false)
+												notification.error({
+													message: `Loading the ${e.abbrev ? e.abbrev : e.value} ontology failed with the following error:`,
+													description: json.detail,
+												});
 
 										}
 									});
 							}}
+
 						/>
 						</div>
 					</div>

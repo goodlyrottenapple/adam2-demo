@@ -22,12 +22,12 @@ export const getOntology = (url, collapseTree = false) => localForage.getItem(ur
         status: response.status,
         json,
       })));
-  }).then(({ status, json, ok }) => {
+  }).then(({ status, json }) => {
     switch (status) {
       case 200:
         localForage.setItem(url + (collapseTree ? "-collapsed" : ""), res)
       default:
-        return { status, json, ok };
+        return { status, json };
     }
   });
 });
