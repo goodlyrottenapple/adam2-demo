@@ -32,7 +32,7 @@ export default class Term extends React.Component {
 				case 200:
 					this.setState({
 						availableOntologies: availableOntologies
-							// .filter(o => o.status === "ok")
+							.filter(o => o.status === "ok")
 							.map(o => ({label: o.abbrev + " - " + o.label, value: o.url + "/download", abbrev:o.abbrev})),
 						dataUseClassOntology: json
 					})
