@@ -1,5 +1,7 @@
 import React from 'react';
-import Select from '@atlaskit/select';
+import Select , { CreatableSelect } from '@atlaskit/select';
+import CountrySelect from '../CountrySelect';
+import { DatePicker } from '@atlaskit/datetime-picker';
 import { Grid, GridColumn } from '@atlaskit/page';
 import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
 import EditorSettingsIcon from '@atlaskit/icon/glyph/editor/settings';
@@ -33,7 +35,11 @@ export default class Term extends React.Component {
 					this.setState({
 						availableOntologies: availableOntologies
 							.filter(o => o.status === "ok")
-							.map(o => ({label: o.abbrev + " - " + o.label, value: o.url + "/download", abbrev:o.abbrev})),
+							.map(o => ({label: o.abbrev + " - " + o.label, value: o.url + "/download", abbrev:o.abbrev}))
+							.concat([
+								{label: "Countries (ISO 3166-2)", value: "countries"}, 
+								{label: "Date (ISO 8601)", value: "date"}, 
+							]),
 						dataUseClassOntology: json
 					})
 			}
@@ -62,7 +68,67 @@ export default class Term extends React.Component {
 
 
 
+	getRestrictionObjectOntology = () => {
+		switch (this.state.restrictionObjectOntology){
+			case "countries":
+				return <CountrySelect onChange={e => this.handleChange('restrictionObject')({value:e.iso_code})}/>
+			case "date":
+				return <DatePicker
+					id="datepicker"
+					// value={value}
+					onChange={e => this.handleChange('restrictionObject')({value:e})}
+					locale={"en-UK"}
+				/>
+			default:
+				return <DropdownContainer
+					data={this.state.restrictionObjectOntology}
+					mode="radioSelect"
+					texts={{placeholder: this.state.dataUseClassOntology.length === 0 ? "Please select an ontology from the Active ontology dropdown above..." : "Select a Restriction Object term..."}}
+					onChange={this.handleChange('restrictionObject')}
+				/>
+		}
+	}
 
+	handleRestrictionObjectOntology = e => {
+		switch(e.value) {
+			case "countries":
+				this.setState({
+					data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: "ISO 3166-2"}}, 
+					restrictionObjectOntology: "countries"
+				})
+				break;
+			case "date":
+				this.setState({
+					data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: "ISO 8601"}}, 
+					restrictionObjectOntology: "date"
+				})
+				break;
+			default:
+				notification.info({
+					message: `Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`,
+				});
+				getOntology(e.value)
+					.then(({ status, json }) => {
+						switch (status) {
+							case 200:
+								notification.success({
+									message: `${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`,
+								});
+								this.setState({
+									data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value}}, 
+									restrictionObjectOntology: json
+								})
+								break;
+							default:
+								notification.error({
+									message: `Loading the ${e.abbrev ? e.abbrev : e.value} ontology failed with the following error:`,
+									description: json.detail,
+								});
+
+						}
+					});
+		}
+	}
 
 	render() {
 		return (
@@ -167,44 +233,11 @@ export default class Term extends React.Component {
 										}),
 									}}
 							options={this.state.availableOntologies}
-
-							onChange={e => {
-								notification.info({
-									message: `Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`,
-								});
-
-								getOntology(e.value)
-									.then(({ status, json }) => {
-										switch (status) {
-											case 200:
-												notification.success({
-													message: `${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`,
-												});
-												this.setState({
-													data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value}}, 
-													restrictionObjectOntology: json
-												})
-												break;
-											default:
-												notification.error({
-													message: `Loading the ${e.abbrev ? e.abbrev : e.value} ontology failed with the following error:`,
-													description: json.detail,
-												});
-
-										}
-									});
-							}}
-
+							onChange={this.handleRestrictionObjectOntology}
 						/>
 						</div>
 					</div>
-
-					<DropdownContainer
-						data={this.state.restrictionObjectOntology}
-						mode="radioSelect"
-						texts={{placeholder: this.state.dataUseClassOntology.length === 0 ? "Please select an ontology from the Active ontology dropdown above..." : "Select a Restriction Object term..."}}
-						onChange={this.handleChange('restrictionObject')}
-					/>
+					{this.getRestrictionObjectOntology()}
 				</GridColumn>
 
 				<GridColumn medium={14}>
