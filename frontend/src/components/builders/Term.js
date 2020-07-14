@@ -38,11 +38,22 @@ const selectInTree = (val, nodes) => {
 	for (const n of nodes) {
 		if(n.value === val) {
 			n.checked = true;
-			return;
+			return true;
 		}
 		if(n.children) newNodes = newNodes.concat(n.children)
 	}
-	if(newNodes.length > 0) selectInTree(val, newNodes);
+	if(newNodes.length > 0) return selectInTree(val, newNodes);
+	return false;
+}
+
+const unselectAll = nodes => {
+	for (const n of nodes) {
+		if(n.checked) {
+			n.checked = false;
+			return;
+		}
+		if(n.children) unselectAll(n.children);
+	}
 }
 
 
@@ -73,15 +84,10 @@ export default class Term extends React.Component {
 					})
 			})
 			.then(_ => {
-				if(this.state.data.dataUseClassOntology) this.handleDataUseClassOntologyChange(false)({value: this.state.data.dataUseClassOntology})
-				// this.setState(prevState => {
-				// 	const duc = [...prevState.dataUseClassOntology]
-				// 	duc[0].isDefaultValue = true;
-				// 	return {
-				// 		dataUseClassOntology: duc
-				// 	}
-				// })
-				if(this.state.data.restrictionClass && this.state.data.restrictionClass.restrictionObjectOntology) this.handleRestrictionObjectOntologyChange(false)({value: this.state.data.restrictionClass.restrictionObjectOntology})
+				if(this.state.data.dataUseClassOntology) 
+					this.handleDataUseClassOntologyChange(false)({value: this.state.data.dataUseClassOntology});
+				if(this.state.data.restrictionClass && this.state.data.restrictionClass.restrictionObjectOntology) 
+					this.handleRestrictionObjectOntologyChange(false)({value: this.state.data.restrictionClass.restrictionObjectOntology});
 			})
 	}
 
@@ -90,15 +96,20 @@ export default class Term extends React.Component {
   }
 
 
-	handleChange = prop_name => e =>  {
-		console.log(e)
+	handleChange = prop_name => e => {
 		const newData = {...this.state.data};
+		const newState = {...this.state};
 
 		if (prop_name === 'constraintsDetails'){
 			newData.restrictionClass[prop_name] = e.target.value;
 		}
 		else if (prop_name === "restrictionRule"){
 			newData.restrictionClass[prop_name] = e.value;
+			if(e.value !== "CONSTRAINTS"){
+				newData.restrictionClass.restrictionObject = null;
+				newData.restrictionClass.restrictionObjectOntology = null;
+				newState.restrictionObjectOntology = [];
+			}
 		}
 		else if (prop_name === "restrictionObject"){
 			newData.restrictionClass[prop_name] = e.checked ? e.value : null;
@@ -108,7 +119,7 @@ export default class Term extends React.Component {
 		}
     else newData[prop_name] = e.value;
 
-		this.setState({data: newData});
+		this.setState({...newState, data: newData});
 		this.props.setData(newData);
 	}
 
@@ -125,12 +136,14 @@ export default class Term extends React.Component {
 							message: `${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`,
 						});
 						this.setState(prevState => {
-							if(prevState.data.dataUseClass) selectInTree(prevState.data.dataUseClass, json);
+							var shoulKeepDataUseClass = true;
+							if(prevState.data.dataUseClass) shoulKeepDataUseClass = selectInTree(prevState.data.dataUseClass, json);
 							return {
-								data: {...prevState.data, dataUseClassOntology : e.value}, 
+								data: {...prevState.data, dataUseClassOntology : e.value, dataUseClass : shoulKeepDataUseClass ? prevState.data.dataUseClass : null}, 
 								dataUseClassOntology: json
 							}
 						})
+						this.props.setData(this.state.data);
 						break;
 					default:
 						notification.error({
@@ -170,13 +183,17 @@ export default class Term extends React.Component {
 									message: `${e.abbrev ? e.abbrev : e.value} ontology successfully loaded...`,
 								});
 								this.setState(prevState => {
-									if(prevState.data.restrictionClass.restrictionObject) selectInTree(prevState.data.restrictionClass.restrictionObject, json);
-
+									var shoulKeepRestrictionObject = true;
+									if(prevState.data.restrictionClass.restrictionObject) shoulKeepRestrictionObject = selectInTree(prevState.data.restrictionClass.restrictionObject, json);
 									return {
-										data: {...prevState.data, restrictionClass : {...prevState.data.restrictionClass, restrictionObjectOntology: e.value}}, 
+										data: {...prevState.data, restrictionClass : {...prevState.data.restrictionClass, 
+											restrictionObjectOntology: e.value, 
+											restrictionObject: shoulKeepRestrictionObject ? prevState.data.restrictionClass.restrictionObject : null
+										}}, 
 										restrictionObjectOntology: json
 									}
 								})
+								this.props.setData(this.state.data);
 								break;
 							default:
 								notification.error({
