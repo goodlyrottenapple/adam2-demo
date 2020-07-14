@@ -201,7 +201,7 @@ export default class Term extends React.Component {
 			case "date":
 				return <DatePicker
 					id="datepicker"
-					// value={value}
+					value={this.state.data.restrictionClass.restrictionObject}
 					onChange={e => this.handleChange('restrictionObject')({value:e, checked:true})}
 					locale={"en-UK"}
 				/>
