@@ -126,49 +126,6 @@ export default class MainPage extends Component<Props, State> {
     }
   }
 
-  flagCount = 0;
-
-  // componentDidMount() {
-  //   fetch(
-  //     process.env.REACT_APP_API_URL+"/discovery/loadSettings?id="+this.props.match.params.id, {
-  //       headers: {
-  //         "Access-Control-Allow-Origin": "*",
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'X-Requested-With': 'XMLHttpRequest'
-  //       }
-  //     })
-  //     .then(res => res.json())
-  //     .then(
-  //       (result) => {
-  //         // console.log("Tree: ");
-  //         if(result){
-  //           const newTree = JSON.parse(result)
-
-  //           const items = Object.keys(newTree.items);
-  //           var maxVal = 0, v;
-  //           for (var i = 0; i < items.length; i++) {
-  //             v = parseInt(items[i]);
-  //             if(v > maxVal) maxVal = v;
-  //           }
-
-  //           this.setState({
-  //             tree: newTree,
-  //             counter: maxVal+1
-  //           });
-  //         }
-  //       },
-  //       // Note: it's important to handle errors here
-  //       // instead of a catch() block so that we don't swallow
-  //       // exceptions from actual bugs in components.
-  //       (error) => {
-  //         this.setState({
-  //           error: error
-  //         });
-  //       }
-  //     )
-  // }
-
   storeData = (id) => {
     return (data) => this.setState(prevState => {
       var newTree = {...prevState.tree}
@@ -185,10 +142,6 @@ export default class MainPage extends Component<Props, State> {
       label={typeMap[item.type].label}
       settings_id={this.props.match.params.id}
       advancedMode={this.state.advancedMode}
-      // {...(item.type === "Term" ? {
-      //   dataUseClassOntology: this.state.dataUseClassOntology ? this.state.ontologies[this.state.dataUseClassOntology] : [],
-      //   restrictionObjectOntology: this.state.restrictionObjectOntology ? this.state.ontologies[this.state.restrictionObjectOntology] : []
-      // } : {})}
     />
   }
 
@@ -201,25 +154,14 @@ export default class MainPage extends Component<Props, State> {
         {...provided.dragHandleProps}
 
       >
-        <div style={{
-          backgroundColor:'white',
-          borderColor: 'rgb(222, 235, 255)',
-          borderRadius: '3px',
-          borderWidth: '2px',
-          borderStyle: 'solid',
-          padding: '10px',
-          marginTop: '5px',
-        }}>
-        <Grid spacing="compact">
-          <GridColumn medium={1}>
-            <Button appearance={'subtle'} spacing="none" onClick={() => this.onDelete(item.id)}>
-              <CrossIcon/>
-            </Button>
-          </GridColumn>
-          <GridColumn medium={11}>
+        <div className="builder-container">
+          
+          <div className="content">
             {this.renderBuilderFromTreeItem(item)}
-          </GridColumn>
-        </Grid>
+          </div>
+          <Button className="close-button" appearance={'subtle'} spacing="none" onClick={() => this.onDelete(item.id)}>
+            <CrossIcon/>
+          </Button>
         </div>
       </div>
     );
@@ -364,6 +306,10 @@ export default class MainPage extends Component<Props, State> {
     if('permissionMode' in o){
       const ty = 'PermissionMode';
       this.addBuilder({permissionMode:o.permissionMode}, ty);
+    }
+    if('terms' in o){
+      const ty = 'Term';
+      o.terms.map(r => this.addBuilder(r, ty))
     }
   }
 

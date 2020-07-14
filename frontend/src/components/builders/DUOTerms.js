@@ -94,9 +94,8 @@ export default class DUOTerms extends React.Component {
 
 	render() {
 		return (
-      <div>
-        <div className="textarea">
-        <FieldTextAreaStateless
+      <div style={{padding:'0px 10px'}}>
+        <div className="textarea"><FieldTextAreaStateless
           name="resourceDescription"
           label="DUO terms:"
           style={{width:'100%'}}

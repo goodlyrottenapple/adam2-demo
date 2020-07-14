@@ -1,0 +1,23 @@
+.restriction-container{
+  margin-top: 0.5em; 
+  margin-bottom: 0.5em; 
+  display:flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.restriction-label{
+  padding-right:5em;
+  /* paddingBottom:3px; */
+  /* align-self: flex-end; */
+}
+
+.active-ontology-label{
+display: none;
+}
+
+.active-ontology{
+  align-self: stretch;
+  flex-grow: 1;
+  /* flex-basis: auto; */
+}

@@ -360,8 +360,7 @@ export const allCountries = [
         'ISO 3166-2:SK', 
         'ISO 3166-2:SI', 
         'ISO 3166-2:ES', 
-        'ISO 3166-2:SE',
-
+        'ISO 3166-2:SE'
     ] 
 },
 ];

@@ -33,6 +33,30 @@ div > h5 {
   width: 30%;
 }
 
+
+.builder-container {
+  background-color: white;
+  border-color: rgb(222, 235, 255);
+  border-radius: 3px;
+  border-width: 2px;
+  border-style: solid;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  right:6px;
+  top:6px;
+}
+
+
+.builder-container > .content{
+  flex-grow: 2;
+  padding:10px 0px;
+  margin-top:6px;
+}
+
 /* Use a media query to add a breakpoint at 800px: */
 @media screen and (max-width: 960px) {
   .cols {

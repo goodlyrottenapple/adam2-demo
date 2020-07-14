@@ -32,6 +32,6 @@ const formatOptionLabel = (opt, { context }) => optionLabel(opt);
 const CountrySelect = (props) => (jsx(Select, Object.assign({ isClearable: false, formatOptionLabel: formatOptionLabel, getOptionLabel: getOptionLabel, getOptionValue: getOptionValue, isMulti: false, options: groupedCountries, styles: {
         container: css => ({ ...css }),
         dropdownIndicator: css => ({ ...css, paddingLeft: 0 }),
-        menu: css => ({ ...css, width: 300 }),
+        menu: css => ({ ...css }),
     } }, props)));
 export default CountrySelect;
