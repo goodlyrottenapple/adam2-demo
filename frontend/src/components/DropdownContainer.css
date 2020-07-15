@@ -49,9 +49,29 @@
   background-color: hsl(0,0%,100%);
   border-radius: 4px;
   box-shadow: 0 0 0 1px hsla(0,0%,0%,0.1),0 4px 11px hsla(0,0%,0%,0.1);
-  padding-left: 10px;
+  padding-left: 0px;
+  padding-right: 0px;
+  width: 100%;
+}
+
+
+.react-dropdown-tree-select .dropdown .dropdown-content li > :first-child {
+  margin-left: 10px;
+  /* margin-right: 10px; */
+}
+
+.node {
+  padding-left: 23px;
   padding-right: 10px;
 }
+
+
+
+.react-dropdown-tree-select .dropdown .dropdown-content > span {
+  padding:10px;
+}
+
+
 
 .toggle{
   font-style: normal;
@@ -63,11 +83,79 @@
   height: 28px;
 }
 
-.react-dropdown-tree-select > div > a > ul {
-  display: inline-flex;
-  min-width: calc(100% - 26px);
+
+.react-dropdown-tree-select > div > a::after {
+  vertical-align: top;
+  display: inline-block;
+  margin-top: 5px;
 }
 
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top::after,
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom::after {
+  vertical-align: top;
+}
+
+
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top {
+  background-color: white;
+  border-color: #4C9AFF;
+}
+
+
+.react-dropdown-tree-select > div > a > ul {
+  display: inline-flex;
+  width: calc(100% - 26px);
+}
+
+
+
+
+.react-dropdown-tree-select .tag {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  padding-right:20px;
+}
+
+@media screen and (max-width: 1400px) {
+  .react-dropdown-tree-select .tag {
+    max-width: 220px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .react-dropdown-tree-select .tag {
+    max-width: 160px;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .react-dropdown-tree-select .tag {
+    max-width: 350px;
+  }
+}
+
+@media screen and (max-width: 840px) {
+  .react-dropdown-tree-select .tag {
+    max-width: 180px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .react-dropdown-tree-select .tag {
+    max-width: 110px;
+  }
+}
+
+
+.react-dropdown-tree-select .tag button {
+  position: absolute;
+  right:0px;
+  top:2px;
+  /* z-index: 999; */
+}
 
 .react-dropdown-tree-select > div > a > ul > li {
   padding-top: 1px;
@@ -75,15 +163,17 @@
 
 .react-dropdown-tree-select > div > a > ul > li:last-child {
   flex-grow: 2;
-  padding-top: 4px;
+  /* padding-top: 4px; */
   padding-left: 4px;
 }
 
 .react-dropdown-tree-select > div > a > ul > li:not(:first-child):last-child > input::placeholder {
-  /* WebKit browsers */
    color: transparent;
 }
 
 .react-dropdown-tree-select > div > a > ul > li > input {
   width: 100%;
+  height: 26px;
+  padding-top: 0px;
+  margin-top: 0px;
 }
