@@ -3,7 +3,7 @@ import Select from '@atlaskit/select';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
 
-const permissionModeEnum = ["UNKNOWN", "ALL_TERMS_PERMITTED_BY_DEFAULT", "ALL_TERMS_FORBIDDEN_BY_DEFAULT"]
+const permissionModeEnum = ["UNSPECIFIED", "ALL_UNSTATED_TERMS_PERMITTED_BY_DEFAULT", "ALL_UNSTATED_TERMS_FORBIDDEN_BY_DEFAULT"]
 
 export default class PermissionMode extends React.Component {
 
