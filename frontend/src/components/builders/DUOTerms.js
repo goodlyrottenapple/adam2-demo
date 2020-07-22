@@ -37,34 +37,6 @@ export default class DUOTerms extends React.Component {
     };
 
     getOntology("https://www.ebi.ac.uk/ols/ontologies/duo/download", true).then(({json}) => this.setState({fuse: new Fuse(json.map(e => ({label:e.value, value:e.label})), options)}))
-
-    // let duoTerms = localStorage.getItem('adam2demoDUOTerms')
-    // if(duoTerms){
-    //   duoTerms = JSON.parse(duoTerms)
-    //   console.log(duoTerms, Object.keys(duoTerms))
-    //   const fuse = new Fuse(Object.keys(duoTerms).map(k => ({label: k, value:duoTerms[k]})), options);
-    //   this.setState({fuse: fuse});
-    // } else {
-    //   fetch(
-    //     process.env.REACT_APP_API_URL+"/getOntology",
-    //     {
-    //       method:'POST',
-    //       headers: {
-    //         "Access-Control-Allow-Origin": "*",
-    //         'Content-Type': 'application/json',
-    //         'Accept': 'application/json',
-    //         'X-Requested-With': 'XMLHttpRequest'
-    //       },
-    //       body: JSON.stringify({url: 'http://purl.obolibrary.org/obo/duo.owl', collapseTree:true})
-    //     }
-    //   )
-    //   .then(res => res.json())
-    //   .then(res => {
-    //     const fuse = new Fuse(Object.keys(res).map(k => ({label: k, value:res[k]})), options);
-    //     this.setState({fuse: fuse});
-    //     localStorage.setItem('adam2demoDUOTerms', JSON.stringify(res))
-    //   });
-    // }
   }
 
   mkTrms = txt => {
