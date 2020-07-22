@@ -99,6 +99,12 @@
 .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top {
   background-color: white;
   border-color: #4C9AFF;
+  transition: background-color 200ms ease-in-out, border-color 200ms ease-in-out;
+}
+
+
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom {
+  transition: background-color 200ms ease-in-out, border-color 200ms ease-in-out;
 }
 
 

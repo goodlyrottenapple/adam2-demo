@@ -33,6 +33,9 @@ div > h5 {
   width: 30%;
 }
 
+.content {
+  outline: 0;
+}
 
 .builder-container {
   background-color: white;

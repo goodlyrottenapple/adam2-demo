@@ -6,11 +6,8 @@ import { allCountries } from '../data/countries';
 import { DatePicker } from '@atlaskit/datetime-picker';
 import { Grid, GridColumn } from '@atlaskit/page';
 import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
-import EditorSettingsIcon from '@atlaskit/icon/glyph/editor/settings';
-import Button from '@atlaskit/button';
 import { notification } from 'antd';
 import '../../antd.css';
-// import 'antd/dist/antd.css';
 
 import DropdownContainer from '../DropdownContainer';
 import { getOntology , getAvailableOntologies } from '../../utils/api'
@@ -161,13 +158,13 @@ export default class Term extends React.Component {
 		switch(e.value) {
 			case "ISO 3166-2":
 				this.setState({
-					data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value}}, 
+					data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value, restrictionObject: null}}, 
 					restrictionObjectOntology: "countries"
 				})
 				break;
 			case "ISO 8601":
 				this.setState({
-					data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value}}, 
+					data: {...this.state.data, restrictionClass : {...this.state.data.restrictionClass, restrictionObjectOntology: e.value, restrictionObject: null}}, 
 					restrictionObjectOntology: "date"
 				})
 				break;
@@ -296,7 +293,6 @@ export default class Term extends React.Component {
 					/>
 				</GridColumn>
 
-				{this.state.data.restrictionClass && this.state.data.restrictionClass.restrictionRule && this.state.data.restrictionClass.restrictionRule === "CONSTRAINTS" &&
 				<GridColumn medium={14}>
 					{/* <h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction Object:</h5> */}
 
@@ -324,8 +320,7 @@ export default class Term extends React.Component {
 						</div>
 					</div>
 					{this.getRestrictionObjectOntology()}
-				</GridColumn>}
-				{this.state.data.restrictionClass && this.state.data.restrictionClass.restrictionRule && this.state.data.restrictionClass.restrictionRule === "CONSTRAINTS" &&
+				</GridColumn>
 				<GridColumn medium={14}>
 					<div className="textarea">
 					<FieldTextAreaStateless
@@ -335,7 +330,7 @@ export default class Term extends React.Component {
 						onChange={this.handleChange('constraintsDetails')}
 					/>
 					</div>
-				</GridColumn>}
+				</GridColumn>
 			</Grid>
 
 		);
