@@ -120,7 +120,7 @@ export default class Term extends React.Component {
 		this.props.setData(newData);
 	}
 
-	handleDataUseClassOntologyChange = showPopup => e => {
+	handleDataUseClassOntologyChange = (showPopup, addToOntology = false) => e => {
 		if(showPopup) notification.info({
 			message: `Fetching the ${e.abbrev ? e.abbrev : e.value} ontology...`,
 		});
@@ -137,7 +137,8 @@ export default class Term extends React.Component {
 							if(prevState.data.dataUseClass) shoulKeepDataUseClass = selectInTree(prevState.data.dataUseClass, json);
 							return {
 								data: {...prevState.data, dataUseClassOntology : e.value, dataUseClass : shoulKeepDataUseClass ? prevState.data.dataUseClass : null}, 
-								dataUseClassOntology: json
+								dataUseClassOntology: json,
+								...(addToOntology ? {availableOntologies: [...prevState.availableOntologies, {label: e.value, value: e.value}]} : {})
 							}
 						})
 						this.props.setData(this.state.data);
@@ -154,7 +155,7 @@ export default class Term extends React.Component {
 	}
 
 
-	handleRestrictionObjectOntologyChange = showPopup => e => {
+	handleRestrictionObjectOntologyChange = (showPopup, addToOntology = false) => e => {
 		switch(e.value) {
 			case "ISO 3166-2":
 				this.setState({
@@ -187,7 +188,8 @@ export default class Term extends React.Component {
 											restrictionObjectOntology: e.value, 
 											restrictionObject: shoulKeepRestrictionObject ? prevState.data.restrictionClass.restrictionObject : null
 										}}, 
-										restrictionObjectOntology: json
+										restrictionObjectOntology: json,
+										...(addToOntology ? {availableOntologies: [...prevState.availableOntologies, {label: e.value, value: e.value}]} : {})
 									}
 								})
 								this.props.setData(this.state.data);
@@ -242,9 +244,9 @@ export default class Term extends React.Component {
 						<div></div>
 						<h5 className="restriction-label">Data Use Class:</h5>
 
-						<h5 className="active-ontology-label">Active onotology:</h5>
+						{/* <h5 className="active-ontology-label">Active onotology:</h5> */}
 						<div className="active-ontology">
-							<Select
+							<CreatableSelect
 							className="single-select"
 							classNamePrefix="react-select"
 							menuPortalTarget={document.body}
@@ -258,6 +260,8 @@ export default class Term extends React.Component {
 							options={this.state.availableOntologies}
 							value={this.state.data.dataUseClassOntology ? this.state.availableOntologies.find(e => e.value === this.state.data.dataUseClassOntology) : null}
 							onChange={this.handleDataUseClassOntologyChange(true)}
+							onCreateOption={e => this.handleDataUseClassOntologyChange(true, true)({value: e})}
+							formatCreateLabel={userInput => `Add ontology from '${userInput}'`}
 						/>
 						</div>
 					</div> 
@@ -300,9 +304,9 @@ export default class Term extends React.Component {
 						<div></div>
 						<h5 className="restriction-label">Restriction Object:</h5>
 
-						<h5 className="active-ontology-label">Active onotology:</h5>
+						{/* <h5 className="active-ontology-label">Active onotology:</h5> */}
 						<div className="active-ontology">
-							<Select
+							<CreatableSelect
 							className="single-select"
 							classNamePrefix="react-select"
 							menuPortalTarget={document.body}
@@ -316,6 +320,8 @@ export default class Term extends React.Component {
 							options={this.state.availableOntologies}
 							value={this.state.data.restrictionClass.restrictionObjectOntology ? this.state.availableOntologies.find(e => e.value === this.state.data.restrictionClass.restrictionObjectOntology) : null}
 							onChange={this.handleRestrictionObjectOntologyChange(true)}
+							onCreateOption={e => this.handleRestrictionObjectOntologyChange(true, true)({value: e})}
+							formatCreateLabel={userInput => `Add ontology from '${userInput}'`}
 						/>
 						</div>
 					</div>
