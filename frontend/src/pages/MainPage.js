@@ -5,6 +5,11 @@ import Dropzone from 'react-dropzone';
 import { saveAs } from 'file-saver';
 import * as localForage from "localforage";
 
+import Ajv from 'ajv';
+import betterAjvErrors from 'better-ajv-errors';
+
+import {adamSchema} from '../adam_schema'
+
 // import styled from 'styled-components';
 import Tree, {
   mutateTree,
@@ -101,7 +106,12 @@ const readTextFile =(file) => {
   });
 }
 
+const ajv = new Ajv({ allErrors: true , nullable: true, jsonPointers: true });
+console.log(adamSchema)
+const validate = ajv.compile(adamSchema);
+
 export default class MainPage extends Component<Props, State> {
+
 
   state = {
     counter:0,
@@ -352,7 +362,15 @@ export default class MainPage extends Component<Props, State> {
 
 
   render() {
-    const { tree } = this.state;
+    const { tree, validator } = this.state;
+    const adamProfile = this.mkADAM(this.state.tree);
+    let validatorOutput = [];
+    console.log(adamProfile,validate(adamProfile))
+    if(!validate(adamProfile)) {
+      console.log(betterAjvErrors(adamSchema, adamProfile, validate.errors, {indent:2}))
+      validatorOutput = validate.errors.map(e => betterAjvErrors(adamSchema, adamProfile, [e], {indent:2}));
+    }
+
     return (
       <Dropzone onDrop={this.loadADAM}>
       {({getRootProps}) => (<div className="content" {...getRootProps()}>
@@ -398,14 +416,15 @@ export default class MainPage extends Component<Props, State> {
             <AkCodeBlock
               language="json"
               text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
-              showLineNumbers={false}/>
+              />
               <Button appearance="primary" style={{marginTop:'10px'}} onClick={this.saveADAM}>Download ADA-M profile</Button>
-
-            {/* <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>debug:</h4>
-            <AkCodeBlock
+            {validatorOutput.length > 0 && <h4>Validation errors:</h4>}
+            <div class="errors">
+            {validatorOutput.map(e => <div style={{marginBottom:'10px'}}><AkCodeBlock
               language="json"
-              text={JSON.stringify(this.state.tree, null, 2)}
-              showLineNumbers={false}/> */}
+              text={e}
+              showLineNumbers={false}/></div>)}
+            </div>
           </div>
         </div>
       </div>)}

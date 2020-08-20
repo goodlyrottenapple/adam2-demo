@@ -10,7 +10,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "surge": "bash surge_login.sh && surge --project ./build/ --domain atlaskit-starter.surge.sh",
-    "api": "rm -rf gen/api && openapi-generator generate -i http://web:8000/openapi.json --generator-name javascript -o gen/api && cd gen/api && yarn && yarn build"
+    "postinstall": "patch-package"
   },
   "keywords": [],
   "author": "Sam Balco",
@@ -35,7 +35,9 @@
     "@atlaskit/theme": "^9.5.1",
     "@atlaskit/toggle": "^8.1.6",
     "@atlaskit/tree": "^7.1.2",
+    "ajv": "^6.12.4",
     "antd": "^4.0.3",
+    "better-ajv-errors": "^0.6.7",
     "file-saver": "^2.0.2",
     "fuse.js": "^6.4.0",
     "localforage": "^1.7.4",
@@ -58,6 +60,8 @@
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^1.0.12-4.3.0",
+    "patch-package": "^6.2.2",
+    "postinstall-postinstall": "^2.1.0",
     "react-scripts": "^3.4.0",
     "rewire": "^5.0.0",
     "surge": "^0.21.3"

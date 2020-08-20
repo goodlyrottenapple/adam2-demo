@@ -1,0 +1,12 @@
+diff --git a/node_modules/better-ajv-errors/index.js b/node_modules/better-ajv-errors/index.js
+index 61ce1ab..9b2fbf2 100644
+--- a/node_modules/better-ajv-errors/index.js
++++ b/node_modules/better-ajv-errors/index.js
+@@ -1,6 +1,6 @@
+ 'use strict';
+ 
+-var ver = process.versions.node;
++var ver = process.versions.node || "";
+ var majorVer = parseInt(ver.split('.')[0], 10);
+ 
+ if (majorVer < 4) {
