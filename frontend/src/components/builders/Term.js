@@ -10,7 +10,8 @@ import { notification } from 'antd';
 import '../../antd.css';
 
 import DropdownContainer from '../DropdownContainer';
-import { getOntology , getAvailableOntologies } from '../../utils/api'
+import { getOntology , getAvailableOntologies } from '../../utils/api';
+import Info from '../Info';
 import './Term.css';
 
 const restriction_ruleEnum = ["UNKNOWN", "NO_CONSTRAINTS", "CONSTRAINTS", "FORBIDDEN"]
@@ -237,12 +238,12 @@ export default class Term extends React.Component {
 	render() {
 		return (
 			<Grid>
-				<GridColumn medium={14}><h4>Term of use</h4></GridColumn>
+				<GridColumn medium={14}><h4>Term of use <Info name="terms_of_use_header" placement="h4"/></h4></GridColumn>
 				<GridColumn medium={8}>
 				{this.props.advancedMode ? 
 					<div className="restriction-container">
 						<div></div>
-						<h5 className="restriction-label">Data Use Class:</h5>
+						<h5 className="restriction-label">Data Use Class: <Info name="data_use_class" placement="h5"/></h5>
 
 						{/* <h5 className="active-ontology-label">Active onotology:</h5> */}
 						<div className="active-ontology">
@@ -266,7 +267,7 @@ export default class Term extends React.Component {
 						</div>
 					</div> 
 				:
-					<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data Use Class:</h5>
+					<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data Use Class: <Info name="data_use_class" placement="h5"/></h5>
 				}
 
 					<DropdownContainer
@@ -280,7 +281,7 @@ export default class Term extends React.Component {
 				</GridColumn>
 
 				<GridColumn medium={4}>
-					<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction Rule:</h5>
+					<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction Rule: <Info name="restriction_rule" placement="h5"/></h5>
 					<Select
 						className="single-select"
 						classNamePrefix="react-select"
@@ -302,7 +303,7 @@ export default class Term extends React.Component {
 
 					<div className="restriction-container">
 						<div></div>
-						<h5 className="restriction-label">Restriction Object:</h5>
+						<h5 className="restriction-label">Restriction Object: <Info name="restriction_object" placement="h5"/></h5>
 
 						{/* <h5 className="active-ontology-label">Active onotology:</h5> */}
 						<div className="active-ontology">
