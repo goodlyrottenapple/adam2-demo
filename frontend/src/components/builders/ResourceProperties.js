@@ -3,6 +3,7 @@ import Select from '@atlaskit/select';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
 import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
+import Header from '../Header';
 
 const resourceDataLevelEnum = ["UNKNOWN", "DATABASE", "METADATA", "SUMMARISED", "DATASET", "RECORDSET", "RECORD", "RECORDFIELD"]
 
@@ -41,7 +42,7 @@ export default class ResourceProperties extends React.Component {
 		  <div>
 			  <Grid>
 			  	<GridColumn>
-						<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Resource Name:</h5>
+						<Header style={{marginTop: '0.5em', paddingBottom: '0.5em'}} name="resource_name" advancedMode={this.props.advancedMode}/>	
 						<Textfield
 							name="resourceName"
 							defaultValue={this.state.data.resourceName}
@@ -50,7 +51,7 @@ export default class ResourceProperties extends React.Component {
 			  	</GridColumn>
 
 					<GridColumn>
-			  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data Level:</h5>
+						<Header style={{marginTop: '0.5em', paddingBottom: '0.5em'}} name="data_level" advancedMode={this.props.advancedMode}/>	
 	          <Select
 	            className="single-select"
 	          	classNamePrefix="react-select"
@@ -69,13 +70,15 @@ export default class ResourceProperties extends React.Component {
 
 					<GridColumn medium={12}>
 					<div className="textarea">
-			  	<FieldTextAreaStateless
-						name="resourceDescription"
-						label="Description:"
-						style={{width:'100%'}}
-			      value={this.state.data.resourceDescription}
-			      onChange={this.handleChange('resourceDescription')}
-			    /></div>
+						<Header style={{position: 'relative', top: '1.5em'}} name="resource_description" advancedMode={this.props.advancedMode}/>
+
+						<FieldTextAreaStateless
+							name="resourceDescription"
+							style={{width:'100%'}}
+							value={this.state.data.resourceDescription}
+							onChange={this.handleChange('resourceDescription')}
+						/>
+					</div>
 			  	</GridColumn>
 
 				</Grid>

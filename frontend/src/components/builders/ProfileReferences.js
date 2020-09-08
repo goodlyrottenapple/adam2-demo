@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
+import Header from '../Header';
 
 
 export default class ProfileReferences extends React.Component {
@@ -29,7 +30,8 @@ export default class ProfileReferences extends React.Component {
 		return (
 			<Grid>
 				<GridColumn medium={14}>
-					<h5 style={{paddingBottom: '0.5em'}}>Profile Reference (Citation, URL, DOI, etc.):</h5>
+					<Header style={{paddingBottom: '0.5em'}} name="profile_references" advancedMode={this.props.advancedMode}/>
+
 					<Textfield
 						name="reference"
 						defaultValue={this.state.data.profileReferences[0]}

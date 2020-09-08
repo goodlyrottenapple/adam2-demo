@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
+import Header from '../Header';
 
 
 export default class Contact extends React.Component {
@@ -30,7 +31,7 @@ export default class Contact extends React.Component {
 		  <div>
 		  <Grid>
 		  	<GridColumn>
-					<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Contact Name:</h5>
+					<Header style={{marginTop: '0.5em', paddingBottom: '0.5em'}} name="contact_name" advancedMode={this.props.advancedMode}/>
 					<Textfield
 						name="name"
 						defaultValue={this.state.data.resourceContacts[0].name}
@@ -38,7 +39,7 @@ export default class Contact extends React.Component {
 					/>
 		  	</GridColumn>
 				<GridColumn>
-		  		<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Contact Email:</h5>
+					<Header style={{marginTop: '0.5em', paddingBottom: '0.5em'}} name="contact_email" advancedMode={this.props.advancedMode}/>
           <Textfield
 		      name="email"
 		      defaultValue={this.state.data.resourceContacts[0].email}

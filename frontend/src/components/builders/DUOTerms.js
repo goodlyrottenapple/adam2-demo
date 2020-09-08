@@ -3,6 +3,7 @@ import { Grid, GridColumn } from '@atlaskit/page';
 import { FieldTextAreaStateless } from '@atlaskit/field-text-area';
 import Fuse from 'fuse.js'
 import { getOntology } from '../../utils/api'
+import Header from '../Header';
 
 export default class DUOTerms extends React.Component {
 
@@ -36,7 +37,19 @@ export default class DUOTerms extends React.Component {
       ]
     };
 
-    getOntology("https://www.ebi.ac.uk/ols/ontologies/duo/download", true).then(({json}) => this.setState({fuse: new Fuse(json.map(e => ({label:e.value, value:e.label})), options)}))
+    getOntology("https://www.ebi.ac.uk/ols/ontologies/duo/download", true)
+			.then(({ status, json }) => {
+				switch (status) {
+					case 200:
+						this.setState({fuse: new Fuse(json.map(e => ({label:e.value, value:e.label})), options)})
+						break;
+					default:
+						console.error({
+							message: `Loading the DUO ontology failed with the following error:`,
+							description: json.detail,
+            })
+        }
+      })
   }
 
   mkTrms = txt => {
@@ -67,15 +80,17 @@ export default class DUOTerms extends React.Component {
 	render() {
 		return (
       <div style={{padding:'0px 10px'}}>
-        <div className="textarea"><FieldTextAreaStateless
-          name="resourceDescription"
-          label="DUO terms:"
-          style={{width:'100%'}}
-          value={this.state.duoTermsText}
-          onChange={this.handleChange}
-        /></div>
-        <h5>Recognised DUO terms:</h5>
-        <ul style={{paddingLeft:'20px'}}>{this.state.duoValues.map(k => (<li>{k}</li>))}</ul>
+        <div className="textarea">
+          <Header style={{position: 'relative', top: '1.5em'}} name="duo_terms" advancedMode={this.props.advancedMode}/>
+          <FieldTextAreaStateless
+            name="resourceDescription"
+            style={{width:'100%'}}
+            value={this.state.duoTermsText}
+            onChange={this.handleChange}
+          />
+        </div>
+        <Header name="duo_terms_recognised" advancedMode={this.props.advancedMode}/>
+        <ul style={{paddingLeft:'20px'}}>{this.state.duoValues && this.state.duoValues.map(k => (<li>{k}</li>))}</ul>
       </div>
 		);
 	}

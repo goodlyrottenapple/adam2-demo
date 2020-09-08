@@ -2,6 +2,7 @@ import React from 'react';
 import Select from '@atlaskit/select';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
+import Header from '../Header';
 
 const permissionModeEnum = ["UNSPECIFIED", "ALL_UNSTATED_TERMS_PERMITTED_BY_DEFAULT", "ALL_UNSTATED_TERMS_FORBIDDEN_BY_DEFAULT"]
 
@@ -30,7 +31,7 @@ export default class PermissionMode extends React.Component {
 		  <div>
 		  <Grid>
 		  	<GridColumn>
-		  		<h5 style={{paddingBottom: '0.5em'}}>Permission Mode:</h5>
+					<Header style={{paddingBottom: '0.5em'}} name="permission_mode" advancedMode={this.props.advancedMode}/>
           <Select
             className="single-select"
           	classNamePrefix="react-select"

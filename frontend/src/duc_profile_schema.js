@@ -1,8 +1,8 @@
-export const adamSchema = {
+export const DUCProfileSchema = {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-      "ADAM": {
-          "title": "ADAM",
+      "DUCProfile": {
+          "title": "DUC Profile",
           "type": "object",
           "properties": {
               "profileName": {
@@ -13,10 +13,13 @@ export const adamSchema = {
                   "type": "string",
                   "title": "profileVersion"
               },
-              "profileCreateDate": {
-                  "type": "string",
-                  "format": "date-time",
-                  "title": "profileCreateDate"
+              "profileUpdatedOn": {
+                  "type": "array",
+                  "items": {
+                      "type": "string",
+                      "format": "date"
+                  },
+                  "title": "profileUpdatedOn"
               },
               "profileReferences": {
                   "type": "array",
@@ -130,7 +133,14 @@ export const adamSchema = {
               "restrictionClass": {
                   "$ref": "#/definitions/RestrictionClass",
                   "title": "restrictionClass"
-              }
+              },
+              "childTerms": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Term"
+                },
+                "title": "childTerms"
+            }
           },
           "required": [
               "dataUseClass",
@@ -172,6 +182,6 @@ export const adamSchema = {
           ]
       }
   },
-  "$ref": "#/definitions/ADAM"
+  "$ref": "#/definitions/DUCProfile"
 }
 

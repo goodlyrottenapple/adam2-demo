@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
+import Header from '../Header';
 
 
 export default class ResourceReferences extends React.Component {
@@ -30,7 +31,7 @@ export default class ResourceReferences extends React.Component {
 		  <div>
 		  	<Grid>
 		  		<GridColumn>
-						<h5 style={{paddingBottom: '0.5em'}}>Resource Reference (Citation, URL, DOI, etc.):</h5>
+						<Header style={{paddingBottom: '0.5em'}} name="resource_references" advancedMode={this.props.advancedMode}/>	
 						<Textfield
 							name="reference"
 							defaultValue={this.state.data.resourceReferences[0]}

@@ -11,7 +11,7 @@ import '../../antd.css';
 
 import DropdownContainer from '../DropdownContainer';
 import { getOntology , getAvailableOntologies } from '../../utils/api';
-import Info from '../Info';
+import Header from '../Header';
 import './Term.css';
 
 const restriction_ruleEnum = ["UNKNOWN", "NO_CONSTRAINTS", "CONSTRAINTS", "FORBIDDEN"]
@@ -238,13 +238,12 @@ export default class Term extends React.Component {
 	render() {
 		return (
 			<Grid>
-				<GridColumn medium={14}><h4>Term of use <Info name="terms_of_use_header" placement="h4"/></h4></GridColumn>
+				<GridColumn medium={14}><Header name="term_of_use" size="large" advancedMode={this.props.advancedMode}/></GridColumn>
 				<GridColumn medium={8}>
 				{this.props.advancedMode ? 
 					<div className="restriction-container">
 						<div></div>
-						<h5 className="restriction-label">Data Use Class: <Info name="data_use_class" placement="h5"/></h5>
-
+						<Header name="data_use_class" advancedMode={this.props.advancedMode}/>
 						{/* <h5 className="active-ontology-label">Active onotology:</h5> */}
 						<div className="active-ontology">
 							<CreatableSelect
@@ -267,7 +266,7 @@ export default class Term extends React.Component {
 						</div>
 					</div> 
 				:
-					<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Data Use Class: <Info name="data_use_class" placement="h5"/></h5>
+					<Header name="data_use_class" style={{marginTop: '0.5em', paddingBottom: '0.5em'}} advancedMode={this.props.advancedMode}/>
 				}
 
 					<DropdownContainer
@@ -281,7 +280,7 @@ export default class Term extends React.Component {
 				</GridColumn>
 
 				<GridColumn medium={4}>
-					<h5 style={{marginTop: '0.5em', paddingBottom: '0.5em'}}>Restriction Rule: <Info name="restriction_rule" placement="h5"/></h5>
+					<Header style={{marginTop: '0.5em', paddingBottom: '0.5em'}} name="restriction_rule" advancedMode={this.props.advancedMode}/>
 					<Select
 						className="single-select"
 						classNamePrefix="react-select"
@@ -303,7 +302,7 @@ export default class Term extends React.Component {
 
 					<div className="restriction-container">
 						<div></div>
-						<h5 className="restriction-label">Restriction Object: <Info name="restriction_object" placement="h5"/></h5>
+						<Header name="restriction_object" advancedMode={this.props.advancedMode}/>
 
 						{/* <h5 className="active-ontology-label">Active onotology:</h5> */}
 						<div className="active-ontology">
@@ -330,9 +329,9 @@ export default class Term extends React.Component {
 				</GridColumn>
 				<GridColumn medium={14}>
 					<div className="textarea">
+					<Header style={{position: 'relative', top: '1.5em'}} name="constraint_details" advancedMode={this.props.advancedMode}/>
 					<FieldTextAreaStateless
 						name="resourceName"
-						label="Constraints Details:"
 						value={this.state.data.restrictionClass && this.state.data.restrictionClass.constraintsDetails}
 						onChange={this.handleChange('constraintsDetails')}
 					/>

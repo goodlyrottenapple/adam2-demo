@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, GridColumn } from '@atlaskit/page';
 import Textfield from '@atlaskit/textfield';
+import Header from '../Header';
 
 
 export default class ResourceOrganisations extends React.Component {
@@ -29,7 +30,7 @@ export default class ResourceOrganisations extends React.Component {
 		return (
 			<Grid>
 				<GridColumn medium={14}>
-					<h5 style={{paddingBottom: '0.5em'}}>Resource Organisations:</h5>
+					<Header style={{paddingBottom: '0.5em'}} name="resource_organisations" advancedMode={this.props.advancedMode}/>
 					<Textfield
 						name="organisation"
 						defaultValue={this.state.data.resourceOrganisations[0]}

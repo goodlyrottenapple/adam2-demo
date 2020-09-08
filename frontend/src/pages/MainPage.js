@@ -8,7 +8,7 @@ import * as localForage from "localforage";
 import Ajv from 'ajv';
 import betterAjvErrors from 'better-ajv-errors';
 
-import {adamSchema} from '../adam_schema'
+import {DUCProfileSchema} from '../duc_profile_schema'
 
 // import styled from 'styled-components';
 import Tree, {
@@ -81,7 +81,7 @@ const removeNulls = (o) => {
 
 const collectChildren = (tree, children, isRoot = false) => {
   return children.map(c => {
-    const res = tree.items[c].children.length > 0 ? {...tree.items[c].data, child_terms: collectChildren(tree, tree.items[c].children)} : tree.items[c].data;
+    const res = tree.items[c].children.length > 0 ? {...tree.items[c].data, childTerms: collectChildren(tree, tree.items[c].children)} : tree.items[c].data;
     if(isRoot && tree.items[c].rootNesting) return tree.items[c].rootNesting(res)
     else return res;
   });
@@ -107,8 +107,7 @@ const readTextFile =(file) => {
 }
 
 const ajv = new Ajv({ allErrors: true , nullable: true, jsonPointers: true });
-console.log(adamSchema)
-const validate = ajv.compile(adamSchema);
+const validate = ajv.compile(DUCProfileSchema);
 
 export default class MainPage extends Component<Props, State> {
 
@@ -264,13 +263,13 @@ export default class MainPage extends Component<Props, State> {
   })
 
 
-  mkADAM(tree){
+  mkDUCProfile(tree){
     return removeNulls(collectChildren(tree, tree.items.root.children, true).reduce((acc,c) => mergeObjs(acc,c), {}))
   }
 
-  saveADAM = () => {
-    const blob = new Blob([JSON.stringify(this.mkADAM(this.state.tree), null, 2)], {type: "application/json;charset=utf-8"});
-    saveAs(blob, "adam.json");
+  saveDUCProfile = () => {
+    const blob = new Blob([JSON.stringify(this.mkDUCProfile(this.state.tree), null, 2)], {type: "application/json;charset=utf-8"});
+    saveAs(blob, "duc_profile.json");
   }
 
   addBuilder = (o, ty) => {
@@ -284,7 +283,7 @@ export default class MainPage extends Component<Props, State> {
     });
   }
 
-  loadADAMaux = o => {
+  loadDUCProfileaux = o => {
     if('profileName' in o){
       const ty = 'ProfileProperties';
       this.addBuilder({profileName:o.profileName, profileVersion:o.profileVersion, profileCreateDate:o.profileCreateDate}, ty);
@@ -323,7 +322,7 @@ export default class MainPage extends Component<Props, State> {
     }
   }
 
-  loadADAM = (acceptedFiles) => acceptedFiles.forEach((file) => {
+  loadDUCProfile = (acceptedFiles) => acceptedFiles.forEach((file) => {
     const ext = file.path.split('.').pop().toLowerCase()
     if(ext === 'json') {
       readTextFile(file).then((result) => {
@@ -344,7 +343,7 @@ export default class MainPage extends Component<Props, State> {
             },
           }
         });
-        this.loadADAMaux(res)
+        this.loadDUCProfileaux(res)
       
         
       })
@@ -353,7 +352,7 @@ export default class MainPage extends Component<Props, State> {
 
   componentWillMount = () => {
     localForage.config({
-      name        : 'adam2-demo',
+      name        : 'duc-demo',
       version     : 1.0,
       storeName   : 'ontologies', // Should be alphanumeric, with underscores.
       description : 'Offline store of previously loaded ontologies'
@@ -363,18 +362,18 @@ export default class MainPage extends Component<Props, State> {
 
   render() {
     const { tree, validator } = this.state;
-    const adamProfile = this.mkADAM(this.state.tree);
+    const ducProfile = this.mkDUCProfile(this.state.tree);
     let validatorOutput = [];
-    console.log(adamProfile,validate(adamProfile))
-    if(!validate(adamProfile)) {
-      console.log(betterAjvErrors(adamSchema, adamProfile, validate.errors, {indent:2}))
-      validatorOutput = validate.errors.map(e => betterAjvErrors(adamSchema, adamProfile, [e], {indent:2}));
+    console.log(ducProfile,validate(ducProfile))
+    if(!validate(ducProfile)) {
+      console.log(betterAjvErrors(DUCProfileSchema, ducProfile, validate.errors, {indent:2}))
+      validatorOutput = validate.errors.map(e => betterAjvErrors(DUCProfileSchema, ducProfile, [e], {indent:2}));
     }
 
     return (
-      <Dropzone onDrop={this.loadADAM}>
+      <Dropzone onDrop={this.loadDUCProfile}>
       {({getRootProps}) => (<div className="content" {...getRootProps()}>
-        <PageTitle>ADA-M 2.0 demo</PageTitle>
+        <PageTitle>DUC Profile demo</PageTitle>
         <div className="cols">
           <div className="col1">
             <h4 style={{paddingBottom:'10px'}}>Profile Options:</h4>
@@ -388,7 +387,7 @@ export default class MainPage extends Component<Props, State> {
                   Object.keys(this.state.tree.items)
                     .map(k => this.state.tree.items[k].type ? this.state.tree.items[k].type : "")
                     .includes(option.value)}
-                placeholder="Select a property to add the the ADA-M profile..." />
+                placeholder="Select a property to add the the DUC profile..." />
             </div>
             
 
@@ -412,12 +411,12 @@ export default class MainPage extends Component<Props, State> {
           </div>
 
           <div className="col3">
-            <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>ADA-M profile:</h4>
+            <h4 style={{paddingTop:'0px', paddingBottom:'10px'}}>DUC profile:</h4>
             <AkCodeBlock
               language="json"
-              text={JSON.stringify(this.mkADAM(this.state.tree), null, 2)}
+              text={JSON.stringify(this.mkDUCProfile(this.state.tree), null, 2)}
               />
-              <Button appearance="primary" style={{marginTop:'10px'}} onClick={this.saveADAM}>Download ADA-M profile</Button>
+              <Button appearance="primary" style={{marginTop:'10px'}} onClick={this.saveDUCProfile}>Download DUC profile</Button>
             {validatorOutput.length > 0 && <h4>Validation errors:</h4>}
             <div class="errors">
             {validatorOutput.map(e => <div style={{marginBottom:'10px'}}><AkCodeBlock
