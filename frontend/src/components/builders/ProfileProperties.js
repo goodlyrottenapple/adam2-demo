@@ -69,7 +69,7 @@ export default class PRofileProperties extends React.Component {
 					<GridColumn>
 						<Header style={{marginTop: '0.5em',paddingBottom: '0.5em'}} name="updated_on" advancedMode={this.props.advancedMode}/>
 						<div style={{minHeight: '40px', maxHeight:'100px', overflow:'scroll', paddingBottom:'1.5em'}}>
-						{[...this.state.data.profileUpdatedOn].map((date, i) => {return (<Tag
+						{[...this.state.data.profileUpdatedOn ? this.state.data.profileUpdatedOn : []].map((date, i) => {return (<Tag
 								closable
 								onClose={this.removeDate(i)}
 								// style={{}}
@@ -85,7 +85,7 @@ export default class PRofileProperties extends React.Component {
 
 						<DatePicker
 							id="profileUpdatedOn"
-							value={this.state.data.profileUpdatedOn.length > 0 ? this.state.data.profileUpdatedOn[this.state.data.profileUpdatedOn.length - 1] : Date.now()}
+							value={this.state.data.profileUpdatedOn && this.state.data.profileUpdatedOn.length > 0 ? this.state.data.profileUpdatedOn[this.state.data.profileUpdatedOn.length - 1] : Date.now()}
 							onChange={e => this.addDate(e)}
 							locale={"en-UK"}
 						/>
