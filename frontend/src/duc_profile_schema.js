@@ -69,7 +69,7 @@ export const DUCProfileSchema = {
                       "ACCESS",
                       "DISCOVERY",
                       "DISCOVERY_AND_ACCESS",
-                      "UNKNOW"
+                      "UNKNOWN"
                   ],
                   "type": "string",
                   "title": "sharingMode"
