@@ -1,8 +1,12 @@
 FROM node:12 as frontend
 
+ENV NODE_OPTIONS=--max_old_space_size=4096
+
 COPY . /app
 WORKDIR /app
-RUN cd frontend && yarn install && yarn build
+RUN cd frontend && yarn install --production
+# RUN npm prune --production
+RUN cd frontend && yarn build
 
 
 

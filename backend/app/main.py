@@ -31,7 +31,8 @@ app = FastAPI(docs_url="/docs", redoc_url="/redoc")
 
 origins = [
   "http://localhost",
-  "http://localhost:3002"
+  "http://localhost:3002",
+  "https://adam2-demo.web.app/"
 ]
 
 app.add_middleware(
